@@ -3,7 +3,13 @@
  * 称号・アチーブメント定義
  */
 
-export function maxHP(lv) { return 20 + (lv - 1) * 6; }
+export function charMaxHP(slot, lv) {
+  const base = [10, 7, 13];   // ゆうしゃ / まほうつかい / とうし
+  return base[slot] + (lv - 1) * 2;
+}
+export function maxHP(lv) {
+  return charMaxHP(0, lv) + charMaxHP(1, lv) + charMaxHP(2, lv);
+}
 export function atkBase(lv) { return 8 + (lv - 1) * 3; }
 export function needExp(lv) { return 12 + (lv - 1) * 10; }
 

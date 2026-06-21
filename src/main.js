@@ -4,7 +4,7 @@
 import { GEN, ri, fracHTML } from './data/generators.js';
 import { STAGES, STARTWEAPON } from './data/stages.js';
 import { ZAKO, BOSS, HEROES, buildDungeon, finalBossSVG, crownSVG, skullSVG } from './data/enemies.js';
-import { maxHP, atkBase, needExp, equippedWeapon, ownedWeapons, stageUnlocked, clearPct, TITLES, checkProgressTitles } from './engine/progression.js';
+import { maxHP, charMaxHP, atkBase, needExp, equippedWeapon, ownedWeapons, stageUnlocked, clearPct, TITLES, checkProgressTitles } from './engine/progression.js';
 import { loadHero, saveHero, loadCleared, markCleared, recordMasteryResult, loadMastery, masteryPct, grantAchievement, loadAchievements } from './engine/save.js';
 import { Audio } from './fx/audio.js';
 import { Particles } from './fx/particles.js';
@@ -41,6 +41,29 @@ function clearBattleBG() {
   if (area) area.style.backgroundImage = '';
 }
 
+// ===== パーティ3人管理 =====
+function initPartyHP() {
+  B.partyMaxHP = HEROES.map((_, i) => charMaxHP(i, hero.level));
+  B.partyHP    = [...B.partyMaxHP];
+  B.activeSlot = 0;
+  B.heroHP     = B.partyHP.reduce((a, b) => a + b, 0);
+}
+
+function syncPartyHP() {
+  B.heroHP = B.partyHP.reduce((a, b) => a + Math.max(0, b), 0);
+}
+
+function advanceActiveSlot() {
+  for (let i = 1; i <= 3; i++) {
+    const next = (B.activeSlot + i) % 3;
+    if (B.partyHP[next] > 0) { B.activeSlot = next; return; }
+  }
+}
+
+function isAllFainted() {
+  return B.partyHP.every(hp => hp <= 0);
+}
+
 // ===== ユーティリティ =====
 const $ = id => document.getElementById(id);
 const q = sel => document.querySelector(sel);
@@ -51,6 +74,7 @@ let hero = { level: 1, exp: 0 };
 /** バトル状態 */
 const B = {
   unit: null, enemies: [], idx: 0, heroHP: 0,
+  partyHP: [0, 0, 0], partyMaxHP: [0, 0, 0], activeSlot: 0,
   problem: null, fields: [], active: 0,
   locked: false, pending: null,
   runExp: 0, leveled: false,
@@ -97,7 +121,29 @@ function enemySpriteURL(e) {
 function renderParty(elId) {
   const el = $(elId);
   if (!el) return;
-  el.innerHTML = HEROES.map(h => heroSpriteHTML(h)).join('');
+  const hasBattle = B.partyMaxHP[0] > 0;
+  if (!hasBattle) {
+    el.innerHTML = HEROES.map(h => heroSpriteHTML(h)).join('');
+    return;
+  }
+  el.innerHTML = HEROES.map((h, i) => {
+    const hp    = Math.max(0, B.partyHP[i]);
+    const maxHp = B.partyMaxHP[i];
+    const pct   = maxHp > 0 ? hp / maxHp * 100 : 0;
+    const col   = pct > 50 ? 'var(--hp)' : pct > 25 ? 'var(--exp)' : 'var(--red)';
+    const isActive  = B.activeSlot === i && hp > 0;
+    const isFainted = hp <= 0;
+    const src = IMG[h.sprite];
+    const img = src ? `<img class="hero-sprite${isActive ? ' slot-bob' : ''}" src="${src}" alt="${h.name}">` : '';
+    const badge = isActive
+      ? `<div class="slot-turn">⚡ばん</div>`
+      : `<div class="slot-turn"></div>`;
+    return `<div class="hero-slot${isActive ? ' hero-slot-active' : ''}${isFainted ? ' hero-slot-fainted' : ''}">
+      ${badge}${img}
+      <div class="slot-hp-wrap"><div class="slot-hp-bar" style="width:${pct}%;background:${col}"></div></div>
+      <div class="slot-name">${h.name}</div>
+    </div>`;
+  }).join('');
 }
 
 // ===== タイトル画面初期化 =====
@@ -195,7 +241,7 @@ function startBattle(unit) {
   B.unit = unit;
   B.enemies = buildDungeon(unit);
   B.idx = 0;
-  B.heroHP = maxHP(hero.level);
+  initPartyHP();
   B.runExp = 0; B.leveled = false; B.locked = false;
   B.mistakes = [];
   B.recentAnswers = []; B.streak = 0;
@@ -238,7 +284,7 @@ function startPractice() {
   B.enemies = [];
   // 練習用は敵なし → 問題だけ解く（正解でHPダメージなし）
   B.idx = 0;
-  B.heroHP = maxHP(hero.level);
+  initPartyHP();
   B.runExp = 0; B.leveled = false; B.locked = false;
   B.mistakes = [];
   B.recentAnswers = []; B.streak = 0;
@@ -461,21 +507,55 @@ $('attackBtn').addEventListener('click', () => {
     Audio.play('correct');
     Particles.spawn('correct', getParticleCenter('x'), getParticleCenter('y'));
 
-    const crit = Math.random() < 0.12;
-    const eff = atkBase(hero.level) + equippedWeapon().atk;
-    let dmg = ri(eff - 2, eff + 2); if (dmg < 1) dmg = 1;
-    if (crit) { dmg *= 2; Audio.play('crit'); }
-
     if (B.practiceMode) {
       lines.push('<p class="good">⭕ せいかい！ すごい！</p>');
       if (B.streak >= 3) lines.push(`<p class="lvup">🔥 ${B.streak}もん れんぞく せいかい！</p>`);
+      advanceActiveSlot();
+      renderParty('battleParty');
       B.pending = 'fight';
     } else {
-      e.hp -= dmg; if (e.hp < 0) e.hp = 0;
-      if (crit) lines.push('<p class="lvup">💥 かいしんの いちげき！</p>');
-      lines.push('<p class="good">ゆうしゃの こうげき！</p>');
+      // ===== キャラ固有の攻撃 =====
+      const slot = B.activeSlot;
+      const baseEff = atkBase(hero.level) + equippedWeapon().atk;
+      let eff = baseEff;
+      let attackLabel = HEROES[slot].name + 'の こうげき！';
+      let specialMsg = '';
+
+      if (slot === 0) { // ゆうしゃ：敵瀕死でとどめの一撃
+        if (e.hp / e.maxHp < 0.3) { eff = Math.floor(eff * 1.5); specialMsg = '⚔️ とどめの いちげき！'; }
+      } else if (slot === 1) { // まほうつかい：高火力、連続正解でさらに強化
+        eff = Math.floor(eff * 1.3);
+        attackLabel = 'まほうつかいの じゅもん！';
+        if (B.streak >= 2) { eff = Math.floor(eff * 1.5); specialMsg = `✨ ${B.streak}もん れんぞく！ まほうが さえわたる！`; }
+      } else { // とうし：低火力、正解時に仲間を回復
+        eff = Math.floor(eff * 0.7);
+        attackLabel = 'とうしの こうげき！';
+      }
+
+      const crit = slot !== 1 && Math.random() < 0.12; // まほうつかいは独自強化あるのでクリットなし
+      let dmg = ri(Math.max(1, eff - 2), eff + 2);
+      if (crit) { dmg *= 2; Audio.play('crit'); lines.push('<p class="lvup">💥 かいしんの いちげき！</p>'); }
+      if (specialMsg) lines.push(`<p class="lvup">${specialMsg}</p>`);
+      lines.push(`<p class="good">${attackLabel}</p>`);
       lines.push(`<p>${e.name}に ${dmg}の ダメージ！</p>`);
-      animEnemyHit(dmg, crit); updateBars();
+
+      e.hp -= dmg; if (e.hp < 0) e.hp = 0;
+      animEnemyHit(dmg, crit);
+
+      // とうしの回復
+      if (slot === 2) {
+        let healIdx = B.partyHP.reduce((mi, hp, i) => (hp > 0 && hp / B.partyMaxHP[i] < B.partyHP[mi] / B.partyMaxHP[mi]) ? i : mi, 0);
+        const healAmt = Math.min(3, B.partyMaxHP[healIdx] - B.partyHP[healIdx]);
+        if (healAmt > 0) {
+          B.partyHP[healIdx] += healAmt;
+          syncPartyHP();
+          lines.push(`<p class="good">🙏 ${HEROES[healIdx].name}を ${healAmt}かいふく！</p>`);
+        }
+      }
+
+      advanceActiveSlot();
+      renderParty('battleParty');
+      updateBars();
 
       if (e.hp <= 0) {
         lines.push(`<p class="good">${e.name}を たおした！</p>`);
@@ -506,15 +586,30 @@ $('attackBtn').addEventListener('click', () => {
     if (B.practiceMode) {
       lines.push('<p class="hint">もう一度 かんがえてみよう！</p>');
       if (B.problem.explain) lines.push(`<p class="mn-exp">💡 ${B.problem.explain}</p>`);
+      advanceActiveSlot();
+      renderParty('battleParty');
       B.pending = 'fight';
     } else {
+      const slot = B.activeSlot;
       const edmg = ri(Math.max(1, e.atk - 1), e.atk + 1);
-      B.heroHP -= edmg; if (B.heroHP < 0) B.heroHP = 0;
+      B.partyHP[slot] -= edmg;
+      if (B.partyHP[slot] < 0) B.partyHP[slot] = 0;
+      syncPartyHP();
+
       lines.push(`<p>${e.name}の こうげき！</p>`);
-      lines.push(`<p class="bad">ゆうしゃは ${edmg}の ダメージ！</p>`);
+      lines.push(`<p class="bad">${HEROES[slot].name}は ${edmg}の ダメージを うけた！</p>`);
       if (B.problem.explain) lines.push(`<p class="mn-exp">💡 ${B.problem.explain}</p>`);
-      animHeroHit(); updateBars();
-      B.pending = (B.heroHP <= 0) ? 'gameover' : 'fight';
+
+      if (B.partyHP[slot] <= 0) {
+        lines.push(`<p class="bad">😵 ${HEROES[slot].name}が たおれた…！</p>`);
+      }
+
+      animHeroHit(slot);
+      advanceActiveSlot();
+      renderParty('battleParty');
+      updateBars();
+
+      B.pending = isAllFainted() ? 'gameover' : 'fight';
     }
   }
 
@@ -551,9 +646,11 @@ function grantExp(amount, lines) {
     hero.exp -= needExp(hero.level);
     hero.level++;
     B.leveled = true;
-    B.heroHP = maxHP(hero.level);
+    B.partyMaxHP = HEROES.map((_, i) => charMaxHP(i, hero.level));
+    B.partyHP    = [...B.partyMaxHP]; // レベルアップで全員全回復
+    syncPartyHP();
     lines.push('<p class="lvup">✨ レベルが あがった！</p>');
-    lines.push(`<p class="lvup">ゆうしゃは Lv${hero.level}に なった！ HPかいふく！</p>`);
+    lines.push(`<p class="lvup">Lv${hero.level}！ なかま全員 たいりょく かいふく！</p>`);
     Audio.play('levelup');
     Particles.spawn('levelup', getParticleCenter('x'), getParticleCenter('y'));
 
@@ -585,14 +682,16 @@ function animEnemyDefeat() {
   if (s) s.classList.add('defeated');
 }
 
-function animHeroHit() {
+function animHeroHit(slot) {
   const w = $('heroWinBattle');
   if (w) { w.classList.remove('flash-red'); void w.offsetWidth; w.classList.add('flash-red'); }
-  const app = $('app');
-  Transitions.shake(app, 6, 280);
-  document.querySelectorAll('#battleParty .hero-sprite').forEach(s => {
-    s.classList.remove('hurt'); void s.offsetWidth; s.classList.add('hurt');
-  });
+  Transitions.shake($('app'), 6, 280);
+  // アクティブキャラだけ揺らす
+  const slots = document.querySelectorAll('#battleParty .hero-slot');
+  if (slots[slot]) {
+    const s = slots[slot].querySelector('.hero-sprite');
+    if (s) { s.classList.remove('hurt'); void s.offsetWidth; s.classList.add('hurt'); }
+  }
 }
 
 function getParticleCenter(axis) {
