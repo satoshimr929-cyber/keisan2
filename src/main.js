@@ -434,8 +434,8 @@ $('hintBtn').addEventListener('click', () => {
   B.hintShown = true;
   $('hintBtn').classList.add('used');
   Audio.play('hint');
-  const exp = B.problem.explain || 'ゆっくり 考えてみよう！';
-  setMessage([`<p class="hint-msg">💡 ヒント：${exp}</p>`]);
+  const hint = B.problem.hint || 'ゆっくり 考えてみよう！ 問題を もう一度 読み直してみて';
+  setMessage([`<p class="hint-msg">💡 ヒント：${hint}</p>`]);
   setMode('message');
   $('continueBtn').textContent = 'もどる';
   B.pending = '__hint_return';

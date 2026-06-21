@@ -51,6 +51,7 @@ export const GEN = {
       qText: `${a} ＋ ${b} ＝`, decimal: false, layout: 'single', inputs: [{ label: '' }],
       check: v => parseInt(v[0], 10) === a + b,
       ansHTML: String(a + b),
+      hint: `一の位、十の位… と くらいごとに たし算しよう。くりあがりを わすれずに！`,
       explain: `くらいを そろえて たし算<br>${a} ＋ ${b} ＝ ${a + b}　✓`,
     };
   },
@@ -60,6 +61,7 @@ export const GEN = {
       qText: `${a} − ${b} ＝`, decimal: false, layout: 'single', inputs: [{ label: '' }],
       check: v => parseInt(v[0], 10) === a - b,
       ansHTML: String(a - b),
+      hint: `一の位から じゅんに ひき算しよう。足りなければ 上のくらいから くりさがろう！`,
       explain: `くらいを そろえて ひき算<br>${a} − ${b} ＝ ${a - b}　✓`,
     };
   },
@@ -71,6 +73,7 @@ export const GEN = {
       qText: `${a} × ${b} ＝`, decimal: false, layout: 'single', inputs: [{ label: '' }],
       check: v => parseInt(v[0], 10) === a * b,
       ansHTML: String(a * b),
+      hint: `かけられる数を 一の位・十の位… と くらいごとに わけて、それぞれ かけてから たし算しよう`,
       explain: `くらいごとに かけて たす<br>${a} × ${b} ＝ ${a * b}　✓`,
     };
   },
@@ -84,6 +87,7 @@ export const GEN = {
       qText: `${n} ÷ ${dv} ＝`, decimal: false, layout: 'divrem', inputs: [{ label: '商' }, { label: 'あまり' }],
       check: v => parseInt(v[0], 10) === q && parseInt(v[1], 10) === r,
       ansHTML: `${q} あまり ${r}`,
+      hint: `${dv} の 段の かけ算で、${n} を こえない いちばん 大きい 数を さがそう。のこりが あまりだよ`,
       explain: `${n} ÷ ${dv}<br>商 ${q}、あまり ${r}<br>確認：${dv} × ${q} ＋ ${r} ＝ ${n}　✓`,
     };
   },
@@ -106,6 +110,7 @@ export const GEN = {
       qText: String(n), instr: ins, decimal: false, layout: 'single', inputs: [{ label: '' }],
       check: v => parseInt(v[0], 10) === a,
       ansHTML: String(a),
+      hint: `${tu}の 数字に 注目！ 5以上なら 切り上げ、4以下なら 切り捨てよう`,
       explain: `${tu}に 着目 → ${n} → 四捨五入 → ${a}　✓`,
     };
   },
@@ -126,6 +131,7 @@ export const GEN = {
       layout: 'single', inputs: [{ label: '' }],
       check: v => parseInt(v[0], 10) === r.ans,
       ansHTML: String(r.ans),
+      hint: `( ) → × ÷ → ＋ − の じゅんに けいさんしよう！ かっこの 中が いちばんさき`,
       explain: r.s + `<br>こたえ ${r.ans}　✓`,
     };
   },
@@ -142,6 +148,7 @@ export const GEN = {
       qText: `${fmtH(aH)} ${op} ${fmtH(bH)} ＝`, decimal: true, layout: 'single', inputs: [{ label: '' }],
       check: v => parseH(v[0]) === res,
       ansHTML: fmtH(res),
+      hint: `小数点を たてに そろえよう！ あとは 整数の けいさんと おなじやりかたでOK`,
       explain: `小数点を そろえて 計算<br>${fmtH(aH)} ${op} ${fmtH(bH)} ＝ ${fmtH(res)}　✓`,
     };
   },
@@ -153,6 +160,7 @@ export const GEN = {
       qText: `${fmtH(aH)} × ${m} ＝`, decimal: true, layout: 'single', inputs: [{ label: '' }],
       check: v => parseH(v[0]) === res,
       ansHTML: fmtH(res),
+      hint: `まず 小数点を 無視して 整数どうしで かけ算しよう。おわりに 小数点を 元の けたに もどそう`,
       explain: `整数と 思って ${ai} × ${m} ＝ ${ai * m}<br>小数点を もどして ${fmtH(res)}　✓`,
     };
   },
@@ -162,6 +170,7 @@ export const GEN = {
       qText: `${fmtH(d)} ÷ ${m} ＝`, decimal: true, layout: 'single', inputs: [{ label: '' }],
       check: v => parseH(v[0]) === aH,
       ansHTML: fmtH(aH),
+      hint: `整数の わり算と おなじように けいさんして、こたえに 小数点を つけよう`,
       explain: `整数で ${d / 10} ÷ ${m} ＝ ${aH / 10}<br>こたえ ${fmtH(aH)}　✓`,
     };
   },
@@ -175,6 +184,7 @@ export const GEN = {
       layout: 'fraction', inputs: [{ label: '分子' }, { label: '分母' }],
       check: v => { const a = parseInt(v[0], 10), b = parseInt(v[1], 10); if (!b) return false; return a * den === rn * b; },
       ansHTML: fracHTML(rn, den),
+      hint: `分母が おなじとき、分母は そのままで 分子だけ けいさんしよう！`,
       explain: `分母が おなじだから 分子だけ 計算しよう<br>分子：${n1} ${op} ${n2} ＝ ${rn}<br>こたえ ${fracHTML(rn, den)}　✓`,
     };
   },
@@ -186,6 +196,7 @@ export const GEN = {
       decimal: false, layout: 'single', inputs: [{ label: '' }],
       check: v => parseInt(v[0], 10) === l,
       ansHTML: String(l),
+      hint: `${a}の倍数（${a}, ${a*2}, ${a*3}…）と ${b}の倍数（${b}, ${b*2}, ${b*3}…）を じゅんに 書いて、最初に かさなる 数を さがそう`,
       explain: `両方の だんに さいしょに 出てくる 数<br>${a} と ${b} → ${l}　✓`,
     };
   },
@@ -197,6 +208,7 @@ export const GEN = {
       decimal: false, layout: 'single', inputs: [{ label: '' }],
       check: v => parseInt(v[0], 10) === d,
       ansHTML: String(d),
+      hint: `${a}も ${b}も わりきれる 数を さがそう。1, 2, 3… と 小さい方から 確かめて、いちばん 大きい ものが こたえ`,
       explain: `両方を わりきれる いちばん 大きい 数<br>${a} と ${b} → ${d}　✓`,
     };
   },
@@ -216,6 +228,7 @@ export const GEN = {
       layout: 'fraction', inputs: [{ label: '分子' }, { label: '分母' }],
       check: v => { const a = parseInt(v[0], 10), b = parseInt(v[1], 10); if (!b) return false; return a * rd === rn * b; },
       ansHTML: fracHTML(rn, rd),
+      hint: `分母が ちがうとき まず 通分！ ${d1}と${d2}の 公倍数を 分母に そろえてから けいさんしよう`,
       explain: `分母を そろえる（通分）→ ${rd}<br>${c1}/${rd} ${op} ${c2}/${rd} ＝ ${rn}/${rd}　✓`,
     };
   },
@@ -225,6 +238,7 @@ export const GEN = {
       qText: `${fmtH(aH)} × ${fmtH(bH)} ＝`, decimal: true, layout: 'single', inputs: [{ label: '' }],
       check: v => parseH(v[0]) === res,
       ansHTML: fmtH(res),
+      hint: `小数点を 無視して 整数として かけ算しよう。小数点以下の けたが 両方あわせて いくつか 数えて、うしろから そのぶんだけ もどそう`,
       explain: `整数だと 思って かけ算<br>${ai} × ${bi} ＝ ${ai * bi}<br>小数点を 2つ もどして ${fmtH(res)}　✓`,
     };
   },
@@ -234,6 +248,7 @@ export const GEN = {
       qText: `${fmtH(aH)} ÷ ${fmtH(bH)} ＝`, decimal: true, layout: 'single', inputs: [{ label: '' }],
       check: v => parseH(v[0]) === q * 100,
       ansHTML: String(q),
+      hint: `わる数を 整数にするため、わられる数も わる数も 同じ数 だけ 10倍しよう。かけ算の 段でたしかめてね`,
       explain: `わる数を 整数に するため 両方を 10ばい<br>${bi * q} ÷ ${bi} ＝ ${q}　✓`,
     };
   },
@@ -250,6 +265,7 @@ export const GEN = {
       decimal: false, layout: 'single', inputs: [{ label: '' }],
       check: v => parseInt(v[0], 10) === avg,
       ansHTML: String(avg),
+      hint: `まず ${n}つの 数を ぜんぶ たし算しよう。それを 個数の ${n} で わると 平均がでるよ`,
       explain: `平均＝ ぜんぶ たして 個数で わる<br>${nums.join('＋')} ＝ ${avg * n}<br>${avg * n} ÷ ${n} ＝ ${avg}　✓`,
     };
   },
@@ -263,6 +279,7 @@ export const GEN = {
       qText: `${base} の ${pct}％ は？`, decimal: false, layout: 'single', inputs: [{ label: '' }],
       check: v => parseInt(v[0], 10) === ans,
       ansHTML: String(ans),
+      hint: `${pct}% は ${pct} ÷ 100 のこと。${base} に ${pct} をかけて 100で わろう`,
       explain: `百分率は 100で わって かける<br>${base} × ${pct} ÷ 100 ＝ ${ans}　✓`,
     };
   },
@@ -273,6 +290,7 @@ export const GEN = {
       layout: 'fraction', inputs: [{ label: '分子' }, { label: '分母' }],
       check: v => { const a = parseInt(v[0], 10), b = parseInt(v[1], 10); if (!b) return false; return a * rd === rn * b; },
       ansHTML: fracHTML(rn, rd),
+      hint: `分数の かけ算は 分子どうし・分母どうし それぞれ かけるだけ！ 約分できれば しよう`,
       explain: `分子どうし・分母どうし かける<br>分子 ${n1}×${n2}＝${rn}／分母 ${d1}×${d2}＝${rd}　✓`,
     };
   },
@@ -283,6 +301,7 @@ export const GEN = {
       layout: 'fraction', inputs: [{ label: '分子' }, { label: '分母' }],
       check: v => { const a = parseInt(v[0], 10), b = parseInt(v[1], 10); if (!b) return false; return a * rd === rn * b; },
       ansHTML: fracHTML(rn, rd),
+      hint: `分数の わり算は、わる数（右の分数）を ひっくり返して（逆数に して）かけ算に なおそう！`,
       explain: `わる数を ひっくり返して かける<br>${fracHTML(n1, d1)} × ${fracHTML(d2, n2)}<br>分子 ${n1}×${d2}＝${rn}／分母 ${d1}×${n2}＝${rd}　✓`,
     };
   },
