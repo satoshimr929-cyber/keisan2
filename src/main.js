@@ -11,6 +11,10 @@ import { Particles } from './fx/particles.js';
 import { Transitions } from './fx/transitions.js';
 import { renderWorldMap } from './ui/worldmap.js';
 import { IMG, WIMG, TITLE_BG } from './assets-generated.js';
+import { WARRIOR_1, MAGE_1, PRIEST_1 } from './assets-hero-sprites.js';
+IMG['warrior1'] = WARRIOR_1;
+IMG['mage1']    = MAGE_1;
+IMG['priest1']  = PRIEST_1;
 import { BG_GRASSLAND, BG_FOREST, BG_SNOW, BG_VOLCANO, BG_TEMPLE } from './assets-battle-bg.js';
 import { BattleBG } from './fx/battle-bg.js';
 
@@ -134,7 +138,7 @@ function renderParty(elId) {
     const isActive  = B.activeSlot === i && hp > 0;
     const isFainted = hp <= 0;
     const src = IMG[h.sprite];
-    const img = src ? `<img class="hero-sprite${isActive ? ' slot-bob' : ''}" src="${src}" alt="${h.name}">` : '';
+    const img = src ? `<img class="hero-sprite" src="${src}" alt="${h.name}">` : '';
     const badge = isActive
       ? `<div class="slot-turn">⚡ばん</div>`
       : `<div class="slot-turn"></div>`;

@@ -141,9 +141,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   background:linear-gradient(180deg,#060c20,#04081a);
   border:3px solid var(--line);
   border-radius:var(--radius);
-  padding:10px 12px 16px;
+  padding:10px 12px 0;
   margin-bottom:12px;
   overflow:hidden;
+  display:flex;flex-direction:column;
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.1),
     inset 2px 2px 0 rgba(255,255,255,.08),
@@ -162,12 +163,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .enemy-hp{display:flex;align-items:center;gap:8px;max-width:240px;margin:0 auto 8px;}
 .enemy-hp .bar{height:11px;}
 .enemy-hp .bar>i{background:linear-gradient(180deg,#ff8a8a,var(--red));}
-.enemy-stage{height:150px;display:flex;align-items:flex-end;justify-content:center;position:relative;}
-.enemy-sprite{height:130px;width:auto;max-width:92%;display:block;
+.enemy-stage{height:140px;display:flex;align-items:flex-end;justify-content:center;position:relative;flex:none;}
+.enemy-sprite{height:110px;width:auto;max-width:80%;display:block;
   position:relative;z-index:1;
   image-rendering:pixelated;image-rendering:-moz-crisp-edges;
   animation:bob 2.4s ease-in-out infinite;transform-origin:center bottom;}
-.enemy-sprite.boss{height:150px;}
+.enemy-sprite.boss{height:130px;}
+/* 地面ライン */
+.ground-line{height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);flex:none;}
 @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
 .enemy-sprite.hit{animation:ehit .4s;}
 @keyframes ehit{0%,100%{filter:none;transform:translateX(0);}
@@ -187,16 +190,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* パーティ */
 .party{display:flex;justify-content:center;align-items:flex-end;gap:16px;}
-.battle-party{margin-bottom:12px;}
-.battle-party .hero-sprite{height:62px;}
+/* バトル内パーティ（enemy-area内に移動） */
+.battle-party{
+  position:relative;z-index:2;
+  padding:4px 4px 8px;
+  background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.28));
+}
+.battle-party .hero-sprite{height:68px;}
+/* 攻撃番のキャラが一歩前に出る */
+@keyframes bob-stepped{0%,100%{transform:translateY(-12px);}50%{transform:translateY(-21px);}}
+.hero-slot-active .hero-sprite{
+  filter:drop-shadow(0 0 6px var(--gold)) drop-shadow(0 0 2px var(--gold));
+  animation:bob-stepped 2.4s ease-in-out infinite;
+}
 
 /* 3人個別表示 */
 .hero-slot{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;}
 .slot-turn{height:14px;font-size:10px;font-weight:800;color:var(--gold);text-align:center;letter-spacing:0;}
-.hero-slot-active .hero-sprite{
-  filter:drop-shadow(0 0 6px var(--gold)) drop-shadow(0 0 2px var(--gold));
-  animation:bob 2.4s ease-in-out infinite;
-}
 .slot-bob{animation:bob 2.4s ease-in-out infinite;}
 .hero-slot-fainted{opacity:.4;filter:grayscale(1);}
 .hero-slot-fainted .hero-sprite{animation:none!important;}
@@ -386,8 +396,10 @@ ruby rt{font-size:.55em;color:var(--ink-soft);}
 
 /* スマホ対応 */
 @media (max-height:700px){
-  .enemy-stage{height:120px;}
-  .enemy-sprite{height:110px;}
+  .enemy-stage{height:100px;}
+  .enemy-sprite{height:88px;}
+  .enemy-sprite.boss{height:104px;}
+  .battle-party .hero-sprite{height:54px;}
   .q-text{font-size:28px;}
 }
 </style>
@@ -462,9 +474,10 @@ ruby rt{font-size:.55em;color:var(--ink-soft);}
         <div class="bar"><i id="enemyHpBar"></i></div>
       </div>
       <div class="enemy-stage" id="enemyStage"></div>
+      <div class="ground-line"></div>
+      <div class="party battle-party" id="battleParty"></div>
     </div>
     <div class="win msg-win" id="msgWin"></div>
-    <div class="party battle-party" id="battleParty"></div>
     <div class="win spell-win">
       <div class="spell-label">📜 <ruby>じゅもん<rt>問題</rt></ruby></div>
       <div class="q-instr" id="qInstr" style="display:none"></div>
