@@ -134,11 +134,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     0 4px 20px rgba(0,0,0,.6);
 }
 .enemy-dots{display:flex;gap:6px;justify-content:center;margin-bottom:6px;}
-.edot{width:14px;height:14px;border-radius:50%;background:#2c3461;border:1px solid #44508a;}
+.edot{width:14px;height:14px;border-radius:50%;background:#2c3461;border:1px solid #44508a;
+  box-shadow:0 1px 3px rgba(0,0,0,.7);}
 .edot.dead{background:#333;opacity:.4;}
 .edot.boss{border-radius:3px;background:#5a2d6e;border-color:#9a5cc0;}
 .edot.boss.dead{background:#444;}
-.enemy-name{text-align:center;font-weight:800;font-size:16px;margin-bottom:6px;}
+.enemy-name{text-align:center;font-weight:800;font-size:16px;margin-bottom:6px;
+  text-shadow:0 1px 4px rgba(0,0,0,.9),0 0 8px rgba(0,0,0,.8);}
 .boss-tag{color:var(--gold);font-size:12px;margin-right:4px;}
 .enemy-hp{display:flex;align-items:center;gap:8px;max-width:240px;margin:0 auto 8px;}
 .enemy-hp .bar{height:11px;}

@@ -132,6 +132,7 @@ for (let i = 0; i < 40; i++) {
 let _canvas = null, _ctx = null, _raf = null;
 let _currentTier = 1;
 let _frame = 0;
+let _hasImage = false; // 背景画像がある場合 true → シーン描画スキップ・パーティクルのみ
 
 export const BattleBG = {
   init(container) {
@@ -146,8 +147,9 @@ export const BattleBG = {
     _ctx = _canvas.getContext('2d');
   },
 
-  start(tier) {
+  start(tier, hasImage = false) {
     _currentTier = Math.max(1, Math.min(12, tier || 1));
+    _hasImage = hasImage;
     _particles = [];
     _frame = 0;
     _scrollX = 0;
@@ -172,59 +174,62 @@ export const BattleBG = {
     _frame++;
     _scrollX = (_scrollX + 0.15) % W;
 
-    // 1. 空グラデーション
-    const skyGrad = ctx.createLinearGradient(0, 0, 0, H * 0.65);
-    skyGrad.addColorStop(0, rgb(t.skyTop));
-    skyGrad.addColorStop(1, rgb(t.skyBot));
-    ctx.fillStyle = skyGrad;
-    ctx.fillRect(0, 0, W, H);
+    if (_hasImage) {
+      // 背景画像がある場合: Canvasを透明にしてパーティクルのみ描画
+      ctx.clearRect(0, 0, W, H);
+    } else {
+      // 1. 空グラデーション
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, H * 0.65);
+      skyGrad.addColorStop(0, rgb(t.skyTop));
+      skyGrad.addColorStop(1, rgb(t.skyBot));
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, W, H);
 
-    // 2. 星
-    if (t.stars) {
-      const twinkle = Math.floor(_frame / 20) % 2;
-      ctx.fillStyle = '#f8f8f8';
-      for (const s of _stars) {
-        if (s.b === (twinkle === 1)) {
-          ctx.fillRect(s.x, s.y, 1, 1);
+      // 2. 星
+      if (t.stars) {
+        const twinkle = Math.floor(_frame / 20) % 2;
+        ctx.fillStyle = '#f8f8f8';
+        for (const s of _stars) {
+          if (s.b === (twinkle === 1)) ctx.fillRect(s.x, s.y, 1, 1);
         }
       }
+
+      // 3. 雲 / 遠景
+      if (t.cloudsColor) {
+        ctx.fillStyle = rgb(t.cloudsColor);
+        const cx = ((_scrollX * 0.4) | 0) % W;
+        drawCloud(ctx, (cx + 5) % W, 4, 12, 3);
+        drawCloud(ctx, (cx + 30) % W, 7, 9, 2);
+        drawCloud(ctx, (cx + 50) % W, 3, 14, 3);
+      }
+
+      // 4. 遠景の山/丘
+      const hx = (_scrollX * 0.6) | 0;
+      ctx.fillStyle = rgb(t.hills[0]);
+      drawHills(ctx, hx, H * 0.42, W, H * 0.24, 3, 18);
+      ctx.fillStyle = rgb(t.hills[1]);
+      drawHills(ctx, (hx + 20) % W, H * 0.52, W, H * 0.18, 4, 14);
+
+      // 5. 地面
+      const groundY = (H * 0.68) | 0;
+      ctx.fillStyle = rgb(t.ground);
+      ctx.fillRect(0, groundY, W, H - groundY);
+
+      // 6. 地面ライン
+      ctx.fillStyle = rgb(t.groundLine);
+      ctx.fillRect(0, groundY, W, 1);
+      ctx.fillRect(0, groundY + 2, W, 1);
+
+      // 7. 前景装飾
+      drawForeground(ctx, t, _frame, _scrollX);
+
+      // 9. ラスボスの玉座: 柱
+      if (_currentTier === 12) drawPillars(ctx, _frame);
     }
 
-    // 3. 雲 / 遠景
-    if (t.cloudsColor) {
-      ctx.fillStyle = rgb(t.cloudsColor);
-      const cx = ((_scrollX * 0.4) | 0) % W;
-      drawCloud(ctx, (cx + 5) % W, 4, 12, 3);
-      drawCloud(ctx, (cx + 30) % W, 7, 9, 2);
-      drawCloud(ctx, (cx + 50) % W, 3, 14, 3);
-    }
-
-    // 4. 遠景の山/丘
-    const hx = (_scrollX * 0.6) | 0;
-    ctx.fillStyle = rgb(t.hills[0]);
-    drawHills(ctx, hx, H * 0.42, W, H * 0.24, 3, 18);
-    ctx.fillStyle = rgb(t.hills[1]);
-    drawHills(ctx, (hx + 20) % W, H * 0.52, W, H * 0.18, 4, 14);
-
-    // 5. 地面
-    const groundY = (H * 0.68) | 0;
-    ctx.fillStyle = rgb(t.ground);
-    ctx.fillRect(0, groundY, W, H - groundY);
-
-    // 6. 地面ライン（明るい線）
-    ctx.fillStyle = rgb(t.groundLine);
-    ctx.fillRect(0, groundY, W, 1);
-    ctx.fillRect(0, groundY + 2, W, 1);
-
-    // 7. 前景装飾（tier別）
-    drawForeground(ctx, t, _frame, _scrollX);
-
-    // 8. パーティクル
+    // 8. パーティクル（常に描画）
     spawnParticle(t, _frame);
     updateParticles(ctx, _frame);
-
-    // 9. ラスボスの玉座: 柱
-    if (_currentTier === 12) drawPillars(ctx, _frame);
   },
 };
 
@@ -326,14 +331,14 @@ function spawnParticle(t, frame) {
 }
 
 function updateParticles(ctx, frame) {
+  const sz = _hasImage ? 2 : 1; // 背景画像あり時は視認性のため2×2
   for (let i = _particles.length - 1; i >= 0; i--) {
     const p = _particles[i];
     p.x = (p.x + p.vx + W) % W;
     p.y += p.vy;
     p.life -= p.decay;
     if (p.life <= 0) { _particles.splice(i, 1); continue; }
-    const a = Math.floor(p.life * 255);
     ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${p.life})`;
-    ctx.fillRect(p.x | 0, p.y | 0, 1, 1);
+    ctx.fillRect(p.x | 0, p.y | 0, sz, sz);
   }
 }

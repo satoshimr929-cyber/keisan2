@@ -11,7 +11,35 @@ import { Particles } from './fx/particles.js';
 import { Transitions } from './fx/transitions.js';
 import { renderWorldMap } from './ui/worldmap.js';
 import { IMG, WIMG, TITLE_BG } from './assets-generated.js';
+import { BG_GRASSLAND, BG_FOREST, BG_SNOW, BG_VOLCANO, BG_TEMPLE } from './assets-battle-bg.js';
 import { BattleBG } from './fx/battle-bg.js';
+
+// tier → バトル背景画像
+const BATTLE_BG_MAP = {
+  1: BG_GRASSLAND, 2: BG_FOREST,   3: BG_FOREST,
+  4: BG_GRASSLAND, 5: BG_GRASSLAND,
+  6: BG_SNOW,      7: BG_SNOW,
+  8: BG_VOLCANO,   9: BG_VOLCANO,
+  10: BG_TEMPLE,  11: BG_TEMPLE,  12: BG_TEMPLE,
+};
+
+function setBattleBG(tier) {
+  const area = document.querySelector('.enemy-area');
+  if (!area) return;
+  const url = BATTLE_BG_MAP[tier] || '';
+  if (url) {
+    area.style.backgroundImage = `url(${url})`;
+    area.style.backgroundSize = 'cover';
+    area.style.backgroundPosition = 'center top';
+  } else {
+    area.style.backgroundImage = '';
+  }
+}
+
+function clearBattleBG() {
+  const area = document.querySelector('.enemy-area');
+  if (area) area.style.backgroundImage = '';
+}
 
 // ===== ユーティリティ =====
 const $ = id => document.getElementById(id);
@@ -183,7 +211,8 @@ function startBattle(unit) {
   renderParty('battleParty');
   renderEnemy(true);
   show('screen-battle');
-  BattleBG.start(unit.tier || 1);
+  setBattleBG(unit.tier || 1);
+  BattleBG.start(unit.tier || 1, true);
   setMessage([`<span class="hint">${B.enemies[0].name}が あらわれた！ こたえて こうげきだ！</span>`]);
   setMode('input');
   loadBattleProblem();
@@ -229,7 +258,8 @@ function startPractice() {
   renderParty('battleParty');
   renderEnemy(true);
   show('screen-battle');
-  BattleBG.start(1);
+  setBattleBG(1);
+  BattleBG.start(1, true);
   setMessage(['<span class="hint">れんしゅうを はじめよう！ たくさん といて 実力アップ！</span>']);
   setMode('input');
   loadBattleProblem();
@@ -656,6 +686,7 @@ function showClear() {
   markCleared(B.unit.id);
   Audio.stopBGM();
   BattleBG.stop();
+  clearBattleBG();
   Audio.play('victory');
 
   $('crownEmblem').innerHTML = `<svg viewBox="0 0 120 120" class="big-emblem"><g transform="translate(10,10)">${crownSVG()}</g></svg>`;
@@ -686,6 +717,7 @@ function showClear() {
 function showOver() {
   Audio.stopBGM();
   BattleBG.stop();
+  clearBattleBG();
   Audio.play('defeat');
   $('skullEmblem').innerHTML = `<svg viewBox="0 0 120 120" class="big-emblem"><g transform="translate(10,10)">${skullSVG()}</g></svg>`;
   $('overStats').innerHTML = `
@@ -778,7 +810,7 @@ document.querySelectorAll('[data-back]').forEach(btn => {
   btn.addEventListener('click', () => {
     Audio.play('tap');
     const target = btn.dataset.back;
-    if (target === 'screen-map') { Audio.stopBGM(); BattleBG.stop(); openMap(); }
+    if (target === 'screen-map') { Audio.stopBGM(); BattleBG.stop(); clearBattleBG(); openMap(); }
     else if (target === 'screen-title') { Audio.stopBGM(); initTitle(); show('screen-title', 'back'); }
     else show(target, 'back');
   });
