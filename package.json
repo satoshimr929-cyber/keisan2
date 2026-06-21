@@ -1,0 +1,20 @@
+{
+  "name": "keisan-quest",
+  "version": "2.0.0",
+  "description": "けいさんクエスト - 小学4〜6年生向け算数学習RPG",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "extract": "node scripts/extract-assets.js",
+    "build": "node scripts/extract-assets.js && vite build",
+    "preview": "vite preview",
+    "test": "node tests/generators.test.js",
+    "test:watch": "node --watch tests/generators.test.js"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "vite-plugin-singlefile": "^2.0.3",
+    "typescript": "^5.5.0"
+  }
+}
