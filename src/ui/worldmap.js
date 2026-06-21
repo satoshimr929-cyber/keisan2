@@ -23,14 +23,26 @@ export function renderWorldMap(container, onSelectStage) {
   svg.setAttribute('class', 'worldmap-svg');
   svg.setAttribute('aria-label', 'ワールドマップ');
 
-  // 背景グラデーション
+  // 背景グラデーション・地形フィルター定義
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
   defs.innerHTML = `
     <radialGradient id="mapbg" cx="50%" cy="60%" r="55%">
-      <stop offset="0%" stop-color="#1a2c5a"/>
-      <stop offset="100%" stop-color="#0b1020"/>
+      <stop offset="0%" stop-color="#141e44"/>
+      <stop offset="100%" stop-color="#060912"/>
     </radialGradient>
+    <radialGradient id="tg0" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0d2e06" stop-opacity=".85"/><stop offset="100%" stop-color="#0d2e06" stop-opacity="0"/></radialGradient>
+    <radialGradient id="tg1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#062008" stop-opacity=".85"/><stop offset="100%" stop-color="#062008" stop-opacity="0"/></radialGradient>
+    <radialGradient id="tg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0c1830" stop-opacity=".8"/><stop offset="100%" stop-color="#0c1830" stop-opacity="0"/></radialGradient>
+    <radialGradient id="tg3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#062248" stop-opacity=".85"/><stop offset="100%" stop-color="#062248" stop-opacity="0"/></radialGradient>
+    <radialGradient id="tg4" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#102438" stop-opacity=".85"/><stop offset="100%" stop-color="#102438" stop-opacity="0"/></radialGradient>
+    <radialGradient id="tg5" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#3a0e00" stop-opacity=".85"/><stop offset="100%" stop-color="#3a0e00" stop-opacity="0"/></radialGradient>
+    <radialGradient id="tg6" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#220400" stop-opacity=".85"/><stop offset="100%" stop-color="#220400" stop-opacity="0"/></radialGradient>
+    <radialGradient id="tg7" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#14003a" stop-opacity=".85"/><stop offset="100%" stop-color="#14003a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="tg8" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#200848" stop-opacity=".9"/><stop offset="100%" stop-color="#200848" stop-opacity="0"/></radialGradient>
+    <radialGradient id="tg9" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1a1400" stop-opacity=".9"/><stop offset="100%" stop-color="#1a1400" stop-opacity="0"/></radialGradient>
     <filter id="glow"><feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="tglow"><feGaussianBlur stdDeviation="2" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   `;
   svg.appendChild(defs);
@@ -40,6 +52,46 @@ export function renderWorldMap(container, onSelectStage) {
   bg.setAttribute('width', W); bg.setAttribute('height', H);
   bg.setAttribute('fill', 'url(#mapbg)');
   svg.appendChild(bg);
+
+  // ===== 地形ゾーン（SFC風マップ） =====
+  const TERRAIN = [
+    { cx: 12, cy: 78, rx: 16, ry: 12, grad: 'tg0' },  // 草原
+    { cx: 26, cy: 64, rx: 16, ry: 11, grad: 'tg1' },  // 森
+    { cx: 40, cy: 52, rx: 14, ry: 11, grad: 'tg2' },  // 霧の谷
+    { cx: 46, cy: 38, rx: 14, ry: 12, grad: 'tg3' },  // 水の泉・湖
+    { cx: 33, cy: 17, rx: 16, ry: 10, grad: 'tg4' },  // 氷の洞窟
+    { cx: 57, cy: 20, rx: 16, ry: 11, grad: 'tg5' },  // 火山
+    { cx: 66, cy: 33, rx: 14, ry: 11, grad: 'tg6' },  // 溶岩の間
+    { cx: 68, cy: 48, rx: 13, ry: 11, grad: 'tg7' },  // 暗黒神殿
+    { cx: 60, cy: 57, rx: 12, ry: 10, grad: 'tg8' },  // 深淵の祭壇
+    { cx: 50, cy: 67, rx: 11, ry: 9,  grad: 'tg9' },  // 玉座
+  ];
+  for (const z of TERRAIN) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    el.setAttribute('cx', z.cx); el.setAttribute('cy', z.cy);
+    el.setAttribute('rx', z.rx); el.setAttribute('ry', z.ry);
+    el.setAttribute('fill', `url(#${z.grad})`);
+    svg.appendChild(el);
+  }
+
+  // 地形アイコン（小さな装飾）
+  const DECO = [
+    // type, x, y, size, color
+    ['▲', 8, 75, '3.5', '#1a5a10'],  ['▲', 16, 76, '3', '#1a5a10'],
+    ['▲', 24, 61, '3.5', '#0e3808'],  ['▲', 30, 63, '3', '#0e3808'],
+    ['❄', 27, 14, '3.5', '#7ad0ff'],  ['❄', 37, 11, '3', '#7ad0ff'],
+    ['🌋', 55, 15, '4', '#ff6030'],
+    ['★', 50, 63, '3.5', '#c8a000'],
+  ];
+  for (const [ch, x, y, sz, col] of DECO) {
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', x); t.setAttribute('y', y);
+    t.setAttribute('font-size', sz);
+    t.setAttribute('fill', col); t.setAttribute('opacity', '0.6');
+    t.setAttribute('text-anchor', 'middle');
+    t.textContent = ch;
+    svg.appendChild(t);
+  }
 
   // 道（破線）
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');

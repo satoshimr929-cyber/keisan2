@@ -11,6 +11,7 @@ import { Particles } from './fx/particles.js';
 import { Transitions } from './fx/transitions.js';
 import { renderWorldMap } from './ui/worldmap.js';
 import { IMG, WIMG, TITLE_BG } from './assets-generated.js';
+import { BattleBG } from './fx/battle-bg.js';
 
 // ===== ユーティリティ =====
 const $ = id => document.getElementById(id);
@@ -182,6 +183,7 @@ function startBattle(unit) {
   renderParty('battleParty');
   renderEnemy(true);
   show('screen-battle');
+  BattleBG.start(unit.tier || 1);
   setMessage([`<span class="hint">${B.enemies[0].name}が あらわれた！ こたえて こうげきだ！</span>`]);
   setMode('input');
   loadBattleProblem();
@@ -227,6 +229,7 @@ function startPractice() {
   renderParty('battleParty');
   renderEnemy(true);
   show('screen-battle');
+  BattleBG.start(1);
   setMessage(['<span class="hint">れんしゅうを はじめよう！ たくさん といて 実力アップ！</span>']);
   setMode('input');
   loadBattleProblem();
@@ -250,7 +253,16 @@ function renderEnemy(first) {
 
   const stage = $('enemyStage');
   const src = enemySpriteURL(e);
-  stage.innerHTML = `<img class="enemy-sprite${e.boss ? ' boss' : ''}" id="enemySprite" src="${src}" alt="${e.name}">`;
+  // canvasを保持しつつ敵スプライトだけ差し替え
+  let img = stage.querySelector('#enemySprite');
+  if (!img) {
+    img = document.createElement('img');
+    stage.appendChild(img);
+  }
+  img.className = `enemy-sprite${e.boss ? ' boss' : ''}`;
+  img.id = 'enemySprite';
+  img.src = src;
+  img.alt = e.name;
   updateBars();
 }
 
@@ -643,6 +655,7 @@ function renderReward(stage) {
 function showClear() {
   markCleared(B.unit.id);
   Audio.stopBGM();
+  BattleBG.stop();
   Audio.play('victory');
 
   $('crownEmblem').innerHTML = `<svg viewBox="0 0 120 120" class="big-emblem"><g transform="translate(10,10)">${crownSVG()}</g></svg>`;
@@ -672,6 +685,7 @@ function showClear() {
 // ===== ゲームオーバー =====
 function showOver() {
   Audio.stopBGM();
+  BattleBG.stop();
   Audio.play('defeat');
   $('skullEmblem').innerHTML = `<svg viewBox="0 0 120 120" class="big-emblem"><g transform="translate(10,10)">${skullSVG()}</g></svg>`;
   $('overStats').innerHTML = `
@@ -764,7 +778,7 @@ document.querySelectorAll('[data-back]').forEach(btn => {
   btn.addEventListener('click', () => {
     Audio.play('tap');
     const target = btn.dataset.back;
-    if (target === 'screen-map') { Audio.stopBGM(); openMap(); }
+    if (target === 'screen-map') { Audio.stopBGM(); BattleBG.stop(); openMap(); }
     else if (target === 'screen-title') { Audio.stopBGM(); initTitle(); show('screen-title', 'back'); }
     else show(target, 'back');
   });
@@ -790,6 +804,7 @@ $('muteBtn').addEventListener('click', () => {
 (async () => {
   // Vite 環境: 遷移システム初期化
   Transitions.init();
+  BattleBG.init($('enemyStage'));
 
   // パーティクルキャンバス
   const canvas = document.createElement('canvas');

@@ -7,14 +7,14 @@
 <title>けいさんクエスト｜算数RPG</title>
 <style>
 :root{
-  --bg0:#0b1020; --bg1:#141b34;
-  --panel:#0a0e1c; --line:#ffffff;
-  --ink:#f4f6ff; --ink-soft:#aeb8d8;
-  --gold:#ffcf3f; --gold-d:#c79a16;
-  --hp:#46d36a; --hp-d:#1f8a42;
-  --mp:#46b6ff; --exp:#ffcf3f;
-  --red:#ff5a55; --blue:#5aa0ff;
-  --radius:10px;
+  --bg0:#06091a; --bg1:#0e1428;
+  --panel:#08091e; --line:#d0d8ff;
+  --ink:#eef2ff; --ink-soft:#9aaacf;
+  --gold:#ffd040; --gold-d:#a86800;
+  --hp:#3ec860; --hp-d:#1a7034;
+  --mp:#40aaff; --exp:#ffd040;
+  --red:#ff3a3a; --blue:#4a90ff;
+  --radius:4px;
 }
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
@@ -25,20 +25,37 @@ body{
   font-family:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN W4","BIZ UDPGothic","Yu Gothic UI",sans-serif;
   color:var(--ink);-webkit-font-smoothing:antialiased;
   background:
-    radial-gradient(2px 2px at 15% 25%,rgba(255,255,255,.5),transparent),
-    radial-gradient(2px 2px at 70% 15%,rgba(255,255,255,.4),transparent),
-    radial-gradient(1.5px 1.5px at 40% 65%,rgba(255,255,255,.3),transparent),
-    radial-gradient(1.5px 1.5px at 88% 72%,rgba(255,255,255,.25),transparent),
+    radial-gradient(2px 2px at 15% 25%,rgba(255,255,255,.55),transparent),
+    radial-gradient(2px 2px at 70% 15%,rgba(255,255,255,.45),transparent),
+    radial-gradient(1.5px 1.5px at 40% 65%,rgba(255,255,255,.35),transparent),
+    radial-gradient(1.5px 1.5px at 88% 72%,rgba(255,255,255,.28),transparent),
+    radial-gradient(1px 1px at 55% 40%,rgba(180,200,255,.3),transparent),
     linear-gradient(180deg,var(--bg0),var(--bg1));
   background-attachment:fixed;
+}
+/* CRTスキャンライン（subtleなSFC風） */
+body::after{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.07) 3px,rgba(0,0,0,.07) 4px);
+  pointer-events:none;z-index:9998;
 }
 #app{max-width:500px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:14px 14px 32px;}
 .screen{display:none;flex:1;flex-direction:column;}
 .screen.active{display:flex;}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 
-/* ウィンドウ枠 */
-.win{background:var(--panel);border:3px solid var(--line);border-radius:var(--radius);padding:12px 14px;}
+/* ウィンドウ枠（DQ風2重ボーダー） */
+.win{
+  background:var(--panel);
+  border:3px solid var(--line);
+  border-radius:var(--radius);
+  padding:12px 14px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.12),
+    inset 2px 2px 0 rgba(255,255,255,.1),
+    inset -2px -2px 0 rgba(0,0,0,.6),
+    0 4px 16px rgba(0,0,0,.5);
+}
 
 /* ===== トップバー ===== */
 .topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
@@ -54,15 +71,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .title-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(11,16,32,.85));
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 10px 16px;}
 .title-party{display:flex;justify-content:center;gap:10px;margin-bottom:8px;}
-.hero-sprite{height:72px;width:auto;}
+.hero-sprite{height:72px;width:auto;image-rendering:pixelated;image-rendering:-moz-crisp-edges;}
 .app-title{font-size:34px;font-weight:800;color:var(--gold);
   text-shadow:0 2px 0 var(--gold-d),0 4px 12px rgba(0,0,0,.6);margin:0 0 2px;}
 .app-sub{font-size:13px;color:#ffe9a8;margin:0 0 10px;text-shadow:0 1px 4px rgba(0,0,0,.7);}
 .title-pct{font-size:12px;color:var(--ink-soft);margin:4px 0 0;}
 .title-btns{display:flex;flex-direction:column;gap:10px;padding:18px 4px 0;}
-.title-btn{width:100%;height:60px;border-radius:12px;font-size:20px;font-weight:800;
-  background:linear-gradient(180deg,#ffe27a,var(--gold));border:2px solid var(--gold-d);
-  color:#2a1f00;box-shadow:0 4px 0 var(--gold-d);transition:transform .08s;}
+.title-btn{width:100%;height:60px;border-radius:var(--radius);font-size:20px;font-weight:800;letter-spacing:.06em;
+  background:linear-gradient(180deg,#ffe090,var(--gold));border:3px solid var(--gold-d);
+  color:#1a1000;box-shadow:0 4px 0 var(--gold-d),inset 0 1px 0 rgba(255,255,255,.4);transition:transform .08s;}
 .title-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--gold-d);}
 .title-btn.secondary{background:linear-gradient(180deg,#2a3670,#1a2550);border-color:#5aa0ff;
   color:var(--blue);box-shadow:0 4px 0 #0e1a40;}
@@ -102,8 +119,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .map-legend span{display:flex;align-items:center;gap:4px;}
 
 /* ===== バトル ===== */
-.enemy-area{position:relative;flex:none;background:linear-gradient(180deg,#1a2547,#0e1430);
-  border:3px solid var(--line);border-radius:var(--radius);padding:10px 12px 16px;margin-bottom:12px;overflow:hidden;}
+.enemy-area{
+  position:relative;flex:none;
+  background:linear-gradient(180deg,#060c20,#04081a);
+  border:3px solid var(--line);
+  border-radius:var(--radius);
+  padding:10px 12px 16px;
+  margin-bottom:12px;
+  overflow:hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.1),
+    inset 2px 2px 0 rgba(255,255,255,.08),
+    inset -2px -2px 0 rgba(0,0,0,.7),
+    0 4px 20px rgba(0,0,0,.6);
+}
 .enemy-dots{display:flex;gap:6px;justify-content:center;margin-bottom:6px;}
 .edot{width:14px;height:14px;border-radius:50%;background:#2c3461;border:1px solid #44508a;}
 .edot.dead{background:#333;opacity:.4;}
@@ -116,6 +145,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .enemy-hp .bar>i{background:linear-gradient(180deg,#ff8a8a,var(--red));}
 .enemy-stage{height:150px;display:flex;align-items:flex-end;justify-content:center;position:relative;}
 .enemy-sprite{height:130px;width:auto;max-width:92%;display:block;
+  position:relative;z-index:1;
+  image-rendering:pixelated;image-rendering:-moz-crisp-edges;
   animation:bob 2.4s ease-in-out infinite;transform-origin:center bottom;}
 .enemy-sprite.boss{height:150px;}
 @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
@@ -129,6 +160,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .float-dmg{position:absolute;font-size:32px;font-weight:800;
   color:#fff;text-shadow:0 2px 0 #000,0 0 10px rgba(0,0,0,.7);
   left:50%;top:20px;transform:translateX(-50%);pointer-events:none;
+  z-index:2;
   animation:floatup 1s ease forwards;}
 .float-dmg.crit{color:var(--gold);font-size:42px;}
 @keyframes floatup{0%{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -160,7 +192,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .spell-win{margin-bottom:12px;text-align:center;}
 .spell-label{font-size:12px;font-weight:800;color:var(--gold);letter-spacing:.08em;margin-bottom:8px;}
 .q-instr{font-size:14px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;}
-.q-text{font-size:34px;font-weight:800;line-height:1.3;}
+.q-text{font-size:34px;font-weight:800;line-height:1.3;letter-spacing:.04em;}
 .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;}
 .frac .num,.frac .den{padding:0 8px;line-height:1.1;}
 .frac .bar{width:100%;height:3px;background:var(--ink);border-radius:2px;margin:3px 0;}
@@ -170,29 +202,34 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .ans-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;}
 .ans-field-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;}
 .ans-label{font-size:12px;font-weight:800;color:var(--ink-soft);}
-.ans-box{min-width:74px;height:60px;padding:0 12px;border-radius:8px;background:#11182f;border:3px solid #39406a;
-  display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:var(--ink);}
+.ans-box{min-width:74px;height:60px;padding:0 12px;border-radius:var(--radius);
+  background:#0a0e22;border:3px solid #4050a0;
+  display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:var(--ink);
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.06);}
 .ans-box.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,207,63,.22);}
 .ans-box .ph{color:#5b6390;font-size:22px;}
 .amari-txt{font-size:16px;font-weight:800;color:var(--ink-soft);align-self:flex-end;margin-bottom:12px;}
 .frac-input{display:flex;flex-direction:column;align-items:center;gap:4px;}
 .frac-input .barwide{width:92px;height:3px;background:var(--ink);border-radius:2px;}
 
-/* キーパッド */
+/* キーパッド（SFC風） */
 .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px;}
-.key{height:58px;border-radius:8px;background:#161e3a;border:2px solid #39406a;
-  font-size:26px;font-weight:800;color:var(--ink);}
-.key:active{transform:translateY(2px);background:#1d2750;}
+.key{height:58px;border-radius:var(--radius);
+  background:linear-gradient(180deg,#1c2550,#101838);
+  border:2px solid #5060a0;
+  font-size:26px;font-weight:800;color:var(--ink);
+  box-shadow:0 3px 0 #080c20,inset 0 1px 0 rgba(255,255,255,.1);}
+.key:active{transform:translateY(2px);background:#101838;box-shadow:0 1px 0 #080c20;}
 .key.del{font-size:18px;color:var(--red);}
 .key.hidden{visibility:hidden;}
 
-/* ボタン類 */
-.cmd-btn{width:100%;height:58px;border-radius:10px;font-size:21px;font-weight:800;color:#2a1f00;
-  background:linear-gradient(180deg,#ffe27a,var(--gold));border:2px solid var(--gold-d);
-  box-shadow:0 4px 0 var(--gold-d);margin-top:14px;transition:transform .08s;}
+/* ボタン類（SFC風） */
+.cmd-btn{width:100%;height:58px;border-radius:var(--radius);font-size:21px;font-weight:800;letter-spacing:.06em;color:#1a1000;
+  background:linear-gradient(180deg,#ffe090,var(--gold));border:3px solid var(--gold-d);
+  box-shadow:0 4px 0 var(--gold-d),inset 0 1px 0 rgba(255,255,255,.4);margin-top:14px;transition:transform .08s;}
 .cmd-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--gold-d);}
-.cmd-btn:disabled{background:#2a3158;color:#6470a0;border-color:#39406a;
-  box-shadow:0 4px 0 #2a3158;cursor:default;}
+.cmd-btn:disabled{background:#1a2040;color:#5060a0;border-color:#2a3050;
+  box-shadow:0 4px 0 #111830;cursor:default;}
 .cmd-btn:disabled:active{transform:none;box-shadow:0 4px 0 #2a3158;}
 .cmd-btn.cont{background:linear-gradient(180deg,#7fd0ff,#46b6ff);color:#06223a;
   border-color:#2a7fb8;box-shadow:0 4px 0 #2a7fb8;}
