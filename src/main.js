@@ -106,9 +106,6 @@ function initTitle() {
   const titleBgEl = $('titleBg');
   if (titleBgEl && TITLE_BG) titleBgEl.src = TITLE_BG;
 
-  // パーティスプライト
-  renderParty('titleParty');
-
   // 進捗%
   const pctEl = $('titlePct');
   if (pctEl) {
