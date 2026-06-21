@@ -34,7 +34,7 @@ export function renderWorldMap(container, onSelectStage) {
   const cleared    = loadCleared();
   const clearedCnt = cleared.length;
 
-  const svg = E('svg', { viewBox: '0 0 100 100', class: 'worldmap-svg', 'aria-label': 'ワールドマップ' });
+  const svg = E('svg', { viewBox: '0 0 180 100', class: 'worldmap-svg', 'aria-label': 'ワールドマップ' });
 
   // ===== DEFS =====
   const defs = E('defs');
@@ -57,8 +57,8 @@ export function renderWorldMap(container, onSelectStage) {
   if (WORLDMAP_BG) {
     svg.appendChild(E('image', {
       href: WORLDMAP_BG,
-      x: 0, y: 0, width: 100, height: 100,
-      preserveAspectRatio: 'xMidYMid slice',
+      x: 0, y: 0, width: 180, height: 100,
+      preserveAspectRatio: 'none',
       'image-rendering': 'pixelated',
     }));
     // 半透明オーバーレイ（ノード・テキストの視認性確保）
@@ -186,4 +186,15 @@ export function renderWorldMap(container, onSelectStage) {
 
   container.innerHTML = '';
   container.appendChild(svg);
+
+  // 現在のステージが見えるよう横スクロール位置を調整
+  requestAnimationFrame(() => {
+    const svgW = svg.getBoundingClientRect().width;
+    const viewW = 180;
+    // 最初の未クリアステージのx座標を中心に
+    const nextIdx = cleared.length < STAGES.length ? cleared.length : STAGES.length - 1;
+    const targetX = STAGE_MAP_POS[nextIdx].x;
+    const scrollX = (targetX / viewW) * svgW - container.clientWidth / 2;
+    container.scrollLeft = Math.max(0, scrollX);
+  });
 }
