@@ -948,6 +948,7 @@ function showChurch() {
   setMessage([`<span class="hint">まちがえた もんだいを といて なかまを ふっかつさせよう！</span>`]);
   $('continueBtn').textContent = 'もんだいをとく';
   B.pending = 'church_start';
+  $('churchEscapeBtn').style.display = 'block';
   setMode('message');
   Audio.stopBGM();
 }
@@ -1150,7 +1151,11 @@ document.querySelectorAll('[data-back]').forEach(btn => {
   btn.addEventListener('click', () => {
     Audio.play('tap');
     const target = btn.dataset.back;
-    if (target === 'screen-map') { Audio.stopBGM(); BattleBG.stop(); clearBattleBG(); openMap(); }
+    if (target === 'screen-map') {
+      if (B.churchMode && B.revivedCount < 3) B.needsRevival = true;
+      exitChurch();
+      Audio.stopBGM(); BattleBG.stop(); clearBattleBG(); openMap();
+    }
     else if (target === 'screen-title') { Audio.stopBGM(); initTitle(); show('screen-title', 'back'); }
     else show(target, 'back');
   });
@@ -1170,6 +1175,7 @@ function exitChurch() {
   $('inputCluster').style.display = '';
   $('continueBtn').style.display = '';
   $('churchCompleteBtns').style.display = 'none';
+  $('churchEscapeBtn').style.display = 'none';
   const sprite = document.querySelector('#enemyStage #enemySprite');
   if (sprite) sprite.style.display = '';
 }
@@ -1188,6 +1194,12 @@ $('churchFleeBtn').addEventListener('click', () => {
 $('churchMapBtn').addEventListener('click', () => {
   Audio.play('tap');
   resumeChurch();
+});
+$('churchEscapeBtn').addEventListener('click', () => {
+  Audio.play('tap');
+  B.needsRevival = true;
+  exitChurch();
+  Audio.stopBGM(); BattleBG.stop(); clearBattleBG(); openMap();
 });
 
 function resumeChurch() {
@@ -1219,6 +1231,7 @@ function resumeChurch() {
   $('inputCluster').style.display = '';
   $('continueBtn').style.display = '';
   $('churchCompleteBtns').style.display = 'none';
+  $('churchEscapeBtn').style.display = 'block';
   setMode('message');
   Audio.stopBGM();
 }
