@@ -107,6 +107,8 @@ const B = {
   hintShown: false,
   currentGenName: '',
   practiceMode: false,
+  churchMode: false,
+  revivedCount: 0,
 };
 
 // ===== 画面遷移 =====
@@ -543,6 +545,7 @@ $('hintBtn').addEventListener('click', () => {
 
 // ===== こうげき =====
 $('attackBtn').addEventListener('click', () => {
+  if (B.churchMode) { handleChurchAnswer(); return; }
   if (B.locked) return;
   B.locked = true; refreshBoxes();
   const vals = B.fields.map(f => f.value);
@@ -690,7 +693,11 @@ $('continueBtn').addEventListener('click', () => {
     case 'clear':
       showClear(); break;
     case 'gameover':
-      showOver(); break;
+      showChurch(); break;
+    case 'church_start':
+    case 'church_next':
+    case 'church_retry_q':
+      churchLoadProblem(); setMode('input'); break;
   }
 });
 
@@ -885,6 +892,72 @@ function showOver() {
   show('screen-over');
 }
 
+// ===== 教会（復活）システム =====
+function showChurch() {
+  B.churchMode = true;
+  B.revivedCount = 0;
+  $('enemyName').textContent = '⛪ 教会';
+  $('enemyDots').innerHTML = '';
+  const ehb = $('enemyHpBar'); if (ehb) ehb.style.width = '0%';
+  const ehn = $('enemyHpNum'); if (ehn) ehn.textContent = '';
+  const sprite = document.querySelector('#enemyStage #enemySprite');
+  if (sprite) sprite.style.display = 'none';
+  setMessage([`<span class="hint">まちがえた もんだいを といて なかまを ふっかつさせよう！</span>`]);
+  $('continueBtn').textContent = 'もんだいをとく';
+  B.pending = 'church_start';
+  setMode('message');
+  Audio.stopBGM();
+}
+
+function churchLoadProblem() {
+  B.locked = false; B.hintShown = false;
+  const pool = (B.unit && B.unit.pool) ? B.unit.pool : ['tasi'];
+  const genName = pool[ri(0, pool.length - 1)];
+  B.currentGenName = genName;
+  B.problem = GEN[genName]();
+  B.fields = []; B.active = 0;
+  $('qText').innerHTML = B.problem.qText;
+  $('qInstr').style.display = 'none';
+  buildAnswerArea();
+  buildKeypad();
+  $('attackBtn').disabled = true;
+  $('hintBtn').style.display = 'none';
+  $('attackBtn').textContent = '✨ ふっかつ！';
+}
+
+function handleChurchAnswer() {
+  if (B.locked) return;
+  B.locked = true; refreshBoxes();
+  const vals = B.fields.map(f => f.value);
+  const ok = B.problem.check(vals);
+  if (ok) {
+    Audio.play('correct');
+    B.partyHP[B.revivedCount] = B.partyMaxHP[B.revivedCount];
+    const revivedName = HEROES[B.revivedCount].name;
+    B.revivedCount++;
+    renderParty('battleParty');
+    updateBars();
+    if (B.revivedCount >= 3) {
+      setMessage([`<p class="lvup">🌟 なかまたちが みんな ふっかつした！</p>`]);
+      $('inputCluster').style.display = 'none';
+      $('continueBtn').style.display = 'none';
+      $('churchCompleteBtns').style.display = 'flex';
+    } else {
+      const remaining = 3 - B.revivedCount;
+      setMessage([`<p class="lvup">✨ ${revivedName}が ふっかつ！</p><p>あと${remaining}にん！</p>`]);
+      $('continueBtn').textContent = 'つぎへ';
+      B.pending = 'church_next';
+      setMode('message');
+    }
+  } else {
+    Audio.play('wrong');
+    setMessage([`<p class="bad">まちがい！ もう いちど！</p><p class="hint">こたえは <b>${B.problem.ansHTML}</b></p>`]);
+    $('continueBtn').textContent = 'もう いちど';
+    B.pending = 'church_retry_q';
+    setMode('message');
+  }
+}
+
 // ===== アチーブメント ポップアップ =====
 function showAchievementPopup(id) {
   const title = TITLES.find(t => t.id === id);
@@ -1044,6 +1117,28 @@ $('clearRetry').addEventListener('click', () => { Audio.play('tap'); startBattle
 $('clearOther').addEventListener('click', () => { Audio.play('tap'); openMap(); });
 $('overRetry').addEventListener('click', () => { Audio.play('tap'); startBattle(B.unit); });
 $('overFlee').addEventListener('click', () => { Audio.play('tap'); openMap(); });
+
+// 教会ボタン
+function exitChurch() {
+  B.churchMode = false;
+  $('attackBtn').textContent = '⚔️ こうげき！';
+  $('hintBtn').style.display = 'inline-flex';
+  $('inputCluster').style.display = '';
+  $('continueBtn').style.display = '';
+  $('churchCompleteBtns').style.display = 'none';
+  const sprite = document.querySelector('#enemyStage #enemySprite');
+  if (sprite) sprite.style.display = '';
+}
+$('churchRetryBtn').addEventListener('click', () => {
+  Audio.play('tap');
+  exitChurch();
+  startBattle(B.unit);
+});
+$('churchFleeBtn').addEventListener('click', () => {
+  Audio.play('tap');
+  exitChurch();
+  openMap();
+});
 
 // ふくしゅうモードボタン
 $('practiceBtn')?.addEventListener('click', () => { Audio.play('tap'); startPractice(); });

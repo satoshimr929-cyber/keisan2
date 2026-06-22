@@ -220,9 +220,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 /* 3人個別表示 */
 .hero-slot{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;}
 .slot-bob{animation:bob 2.4s ease-in-out infinite;}
-.hero-slot-fainted{opacity:.5;}
-.hero-slot-fainted .hero-sprite{animation:none!important;filter:grayscale(1);}
-.hero-slot-fainted .coffin-sprite{opacity:1;filter:none;animation:none!important;}
+.hero-slot-fainted .hero-sprite{animation:none!important;filter:grayscale(1) opacity(.5);}
+.hero-slot-fainted .coffin-sprite{animation:none!important;}
 .slot-hp-wrap{width:48px;height:5px;background:#1e2546;border-radius:3px;overflow:hidden;border:1px solid #2c3461;}
 .slot-hp-bar{height:100%;border-radius:3px;transition:width .35s ease,background .35s ease;}
 .slot-name{font-size:9px;font-weight:800;color:var(--ink-soft);text-align:center;}
@@ -580,6 +579,10 @@ ruby rt{font-size:.55em;color:var(--ink-soft);}
       <button class="cmd-btn" id="attackBtn" disabled>⚔️ こうげき！</button>
     </div>
     <button class="cmd-btn cont" id="continueBtn" style="display:none">つづける</button>
+    <div id="churchCompleteBtns" style="display:none" class="btn-col">
+      <button class="cmd-btn" id="churchRetryBtn">⚔️ ふたたびちょうせん！</button>
+      <button class="cmd-btn cont" id="churchFleeBtn">🗺️ マップへもどる</button>
+    </div>
   </section>
 
   <!-- ===== クリア ===== -->
