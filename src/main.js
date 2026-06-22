@@ -29,7 +29,7 @@ import { WARRIOR_1, MAGE_1, PRIEST_1 } from './assets-hero-sprites.js';
 IMG['warrior1'] = WARRIOR_1;
 IMG['mage1']    = MAGE_1;
 IMG['priest1']  = PRIEST_1;
-import { BG_GRASSLAND, BG_FOREST, BG_SNOW, BG_VOLCANO, BG_TEMPLE, BG_MAKAI } from './assets-battle-bg.js';
+import { BG_GRASSLAND, BG_FOREST, BG_SNOW, BG_VOLCANO, BG_TEMPLE, BG_MAKAI, BG_CHURCH } from './assets-battle-bg.js';
 import { ENEMY_VORLK, ENEMY_NAAGA } from './assets-enemy-new.js';
 import { COFFIN_IMG } from './assets-coffin.js';
 IMG['vorlk'] = ENEMY_VORLK;
@@ -902,6 +902,12 @@ function showChurch() {
   const ehn = $('enemyHpNum'); if (ehn) ehn.textContent = '';
   const sprite = document.querySelector('#enemyStage #enemySprite');
   if (sprite) sprite.style.display = 'none';
+  const area = document.querySelector('.enemy-area');
+  if (area) {
+    area.style.backgroundImage = `url(${BG_CHURCH})`;
+    area.style.backgroundSize = 'cover';
+    area.style.backgroundPosition = 'center top';
+  }
   setMessage([`<span class="hint">まちがえた もんだいを といて なかまを ふっかつさせよう！</span>`]);
   $('continueBtn').textContent = 'もんだいをとく';
   B.pending = 'church_start';
