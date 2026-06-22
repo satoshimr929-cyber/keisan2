@@ -3,19 +3,19 @@
  */
 
 export const ZAKO = [
-  { name: 'ペブルキン',    sprite: 'pebblekin',   hp: 16, exp: 6,  atk: 4 },
-  { name: 'スパイクビートル',sprite: 'beetle',      hp: 20, exp: 8,  atk: 5 },
-  { name: 'リーフインプ',   sprite: 'leafimp',     hp: 18, exp: 7,  atk: 4 },
-  { name: 'シンダーラット', sprite: 'cinderrat',   hp: 20, exp: 9,  atk: 5 },
-  { name: 'ボーンアーチャー',sprite: 'bonearcher',  hp: 22, exp: 10, atk: 6 },
-  { name: '魔晶鬼ヴォルク', sprite: 'vorlk',       hp: 30, exp: 16, atk: 9,  minTier: 10 },
-  { name: '冥蛇ナーガ',     sprite: 'naaga',       hp: 28, exp: 14, atk: 8,  minTier: 10 },
+  { name: 'ペブルキン',    sprite: 'pebblekin',   hp: 12, exp: 6,  atk: 4 },
+  { name: 'スパイクビートル',sprite: 'beetle',      hp: 14, exp: 8,  atk: 5 },
+  { name: 'リーフインプ',   sprite: 'leafimp',     hp: 13, exp: 7,  atk: 4 },
+  { name: 'シンダーラット', sprite: 'cinderrat',   hp: 14, exp: 9,  atk: 5 },
+  { name: 'ボーンアーチャー',sprite: 'bonearcher',  hp: 15, exp: 10, atk: 6 },
+  { name: '魔晶鬼ヴォルク', sprite: 'vorlk',       hp: 16, exp: 16, atk: 9,  minTier: 10 },
+  { name: '冥蛇ナーガ',     sprite: 'naaga',       hp: 15, exp: 14, atk: 8,  minTier: 10 },
 ];
 
 export const BOSS = [
-  { name: 'ゴーレムロード',          sprite: 'golemlord', hp: 44, exp: 32, atk: 9,  boss: true },
-  { name: 'アークメイジ・ウロボロス',  sprite: 'archmage',  hp: 40, exp: 30, atk: 8,  boss: true },
-  { name: 'けいさん大王',             sprite: '__final',   hp: 60, exp: 50, atk: 12, boss: true, final: true },
+  { name: 'ゴーレムロード',          sprite: 'golemlord', hp: 48, exp: 32, atk: 9,  boss: true },
+  { name: 'アークメイジ・ウロボロス',  sprite: 'archmage',  hp: 46, exp: 30, atk: 8,  boss: true },
+  { name: 'けいさん大王',             sprite: '__final',   hp: 65, exp: 50, atk: 12, boss: true, final: true },
 ];
 
 export const HEROES = [
@@ -31,7 +31,7 @@ export function buildDungeon(stage) {
   const tier = (stage && stage.tier) || 1;
   function scale(t) {
     const e = { ...t };
-    e.maxHp = Math.round(t.hp * (1 + (tier - 1) * 0.22));
+    e.maxHp = Math.round(t.hp * (1 + (tier - 1) * 0.70));
     e.hp    = e.maxHp;
     e.atk   = t.atk + Math.floor((tier - 1) * 0.7);
     e.exp   = Math.round(t.exp * (1 + (tier - 1) * 0.15));

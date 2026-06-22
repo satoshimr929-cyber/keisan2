@@ -212,7 +212,12 @@ function updateBars() {
   if (eb) eb.style.width = (hero.exp / nd * 100) + '%';
   const e = B.enemies[B.idx];
   const ehb = $('enemyHpBar');
-  if (ehb && e) ehb.style.width = Math.max(0, e.hp / e.maxHp * 100) + '%';
+  const ehn = $('enemyHpNum');
+  if (ehb && e) {
+    const pct = Math.max(0, e.hp / e.maxHp * 100);
+    ehb.style.width = pct + '%';
+    if (ehn) ehn.textContent = e.hp + '/' + e.maxHp;
+  }
 }
 
 // ===== ワールドマップ =====
