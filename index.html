@@ -118,6 +118,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .party-stat-bar{height:100%;border-radius:4px;transition:width .35s ease;}
 .party-stat-num{font-size:10px;font-weight:800;color:var(--ink-soft);text-align:center;}
 .party-stat-foot{font-size:10px;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:5px;}
+.church-notice{border-color:#ff8844!important;padding:10px 14px;margin-bottom:0;}
+.church-notice-msg{margin:0 0 8px;font-size:13px;color:#ffaa55;}
+.church-notice-btn{background:#b03010;border-color:#ff6633;font-size:14px;padding:10px;}
 
 /* ===== ストーリー画面 ===== */
 #screen-story{justify-content:center;align-items:center;gap:14px;text-align:center;padding:24px 14px;}
@@ -536,6 +539,10 @@ ruby rt{font-size:.55em;color:var(--ink-soft);}
       <h2>🗺️ ワールドマップ</h2>
     </div>
     <div class="win hero-win" id="heroWinMap"></div>
+    <div id="churchNotice" style="display:none" class="win church-notice">
+      <p class="church-notice-msg">⚠️ なかまが たおれている！ 教会で ふっかつさせよう！</p>
+      <button class="cmd-btn church-notice-btn" id="churchMapBtn">⛪ 教会へいく</button>
+    </div>
     <div class="win bag-win" id="bagWin"></div>
     <div id="mapContainer"></div>
     <div class="map-legend">

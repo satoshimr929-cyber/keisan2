@@ -109,6 +109,7 @@ const B = {
   practiceMode: false,
   churchMode: false,
   revivedCount: 0,
+  needsRevival: false,
 };
 
 // ===== 画面遷移 =====
@@ -188,6 +189,7 @@ function renderHeroWin(winId) {
   const el = $(winId);
   if (!el) return;
   if (winId === 'heroWinBattle') { renderPartyStatus(); return; }
+  if (winId === 'heroWinMap') { renderMapPartyStatus(); return; }
   const mh = maxHP(hero.level), nd = needExp(hero.level);
   const eq = equippedWeapon();
   el.innerHTML = `
@@ -228,6 +230,26 @@ function renderPartyStatus() {
     <div class="party-stat-foot">Lv ${hero.level} &nbsp;${wIco(eq)}&thinsp;${eq.name}（＋${eq.atk}）</div>`;
 }
 
+function renderMapPartyStatus() {
+  const el = $('heroWinMap');
+  if (!el) return;
+  const eq = equippedWeapon();
+  const cols = HEROES.map((h, i) => {
+    const maxHp = charMaxHP(i, hero.level);
+    const hp = B.needsRevival ? Math.max(0, B.partyHP[i]) : maxHp;
+    const pct = maxHp > 0 ? hp / maxHp * 100 : 0;
+    const col = pct > 50 ? 'var(--hp)' : pct > 25 ? 'var(--exp)' : 'var(--red)';
+    const dead = hp <= 0;
+    return `<div class="party-stat${dead ? ' party-stat-dead' : ''}">
+      <div class="party-stat-name">${h.name}</div>
+      <div class="party-stat-bar-wrap"><div class="party-stat-bar" style="width:${pct}%;background:${col}"></div></div>
+      <div class="party-stat-num">${hp}/${maxHp}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="party-win">${cols}</div>
+    <div class="party-stat-foot">Lv ${hero.level} &nbsp;${wIco(eq)}&thinsp;${eq.name}（＋${eq.atk}）</div>`;
+}
+
 function updateBars() {
   HEROES.forEach((_, i) => {
     const bar = $(`partyHpBar${i}`);
@@ -257,7 +279,13 @@ function updateBars() {
 function openMap() {
   renderHeroWin('heroWinMap');
   renderBag();
+  const notice = $('churchNotice');
+  if (notice) notice.style.display = B.needsRevival ? 'block' : 'none';
   renderWorldMap($('mapContainer'), (stage) => {
+    if (B.needsRevival) {
+      Audio.play('wrong');
+      return;
+    }
     startStory(stage);
   });
   show('screen-map');
@@ -306,6 +334,7 @@ function startBattle(unit) {
   B.practiceMode = false;
   B.churchMode = false;
   B.revivedCount = 0;
+  B.needsRevival = false;
   $('attackBtn').textContent = '⚔️ こうげき！';
   $('hintBtn').style.display = 'inline-flex';
   $('inputCluster').style.display = '';
@@ -952,6 +981,7 @@ function handleChurchAnswer() {
     renderParty('battleParty');
     updateBars();
     if (B.revivedCount >= 3) {
+      B.needsRevival = false;
       setMessage([`<p class="lvup">🌟 なかまたちが みんな ふっかつした！</p>`]);
       $('inputCluster').style.display = 'none';
       $('continueBtn').style.display = 'none';
@@ -1145,14 +1175,53 @@ function exitChurch() {
 }
 $('churchRetryBtn').addEventListener('click', () => {
   Audio.play('tap');
+  B.needsRevival = false;
   exitChurch();
   startBattle(B.unit);
 });
 $('churchFleeBtn').addEventListener('click', () => {
   Audio.play('tap');
+  B.needsRevival = (B.revivedCount < 3);
   exitChurch();
   openMap();
 });
+$('churchMapBtn').addEventListener('click', () => {
+  Audio.play('tap');
+  resumeChurch();
+});
+
+function resumeChurch() {
+  $('battleTitle').textContent = B.unit ? B.unit.name : '';
+  renderHeroWin('heroWinBattle');
+  renderParty('battleParty');
+  show('screen-battle');
+  setBattleBG(B.unit ? B.unit.tier || 1 : 1);
+  BattleBG.start(B.unit ? B.unit.tier || 1 : 1, false);
+  B.churchMode = true;
+  $('enemyName').textContent = '⛪ 教会';
+  $('enemyDots').innerHTML = '';
+  const ehb = $('enemyHpBar'); if (ehb) ehb.style.width = '0%';
+  const ehn = $('enemyHpNum'); if (ehn) ehn.textContent = '';
+  const sprite = document.querySelector('#enemyStage #enemySprite');
+  if (sprite) sprite.style.display = 'none';
+  const area = document.querySelector('.enemy-area');
+  if (area) {
+    area.style.backgroundImage = `url(${BG_CHURCH})`;
+    area.style.backgroundSize = 'cover';
+    area.style.backgroundPosition = 'center top';
+  }
+  const remaining = 3 - B.revivedCount;
+  setMessage([`<span class="hint">あと${remaining}にん ふっかつさせよう！</span>`]);
+  $('continueBtn').textContent = 'もんだいをとく';
+  B.pending = 'church_start';
+  $('attackBtn').textContent = '✨ ふっかつ！';
+  $('hintBtn').style.display = 'none';
+  $('inputCluster').style.display = '';
+  $('continueBtn').style.display = '';
+  $('churchCompleteBtns').style.display = 'none';
+  setMode('message');
+  Audio.stopBGM();
+}
 
 // ふくしゅうモードボタン
 $('practiceBtn')?.addEventListener('click', () => { Audio.play('tap'); startPractice(); });
