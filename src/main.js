@@ -304,6 +304,13 @@ function startBattle(unit) {
   B.totalCorrect = 0; B.totalWrong = 0;
   B.hintShown = false;
   B.practiceMode = false;
+  B.churchMode = false;
+  B.revivedCount = 0;
+  $('attackBtn').textContent = '⚔️ こうげき！';
+  $('hintBtn').style.display = 'inline-flex';
+  $('inputCluster').style.display = '';
+  $('continueBtn').style.display = 'none';
+  $('churchCompleteBtns').style.display = 'none';
 
   $('battleTitle').textContent = unit.name;
   renderHeroWin('heroWinBattle');
@@ -392,6 +399,7 @@ function renderEnemy(first) {
   img.id = 'enemySprite';
   img.src = src;
   img.alt = e.name;
+  img.style.display = '';
   updateBars();
 }
 
