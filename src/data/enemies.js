@@ -8,6 +8,8 @@ export const ZAKO = [
   { name: 'リーフインプ',   sprite: 'leafimp',     hp: 18, exp: 7,  atk: 4 },
   { name: 'シンダーラット', sprite: 'cinderrat',   hp: 20, exp: 9,  atk: 5 },
   { name: 'ボーンアーチャー',sprite: 'bonearcher',  hp: 22, exp: 10, atk: 6 },
+  { name: '魔晶鬼ヴォルク', sprite: 'vorlk',       hp: 30, exp: 16, atk: 9,  minTier: 10 },
+  { name: '冥蛇ナーガ',     sprite: 'naaga',       hp: 28, exp: 14, atk: 8,  minTier: 10 },
 ];
 
 export const BOSS = [
@@ -35,8 +37,9 @@ export function buildDungeon(stage) {
     e.exp   = Math.round(t.exp * (1 + (tier - 1) * 0.15));
     return e;
   }
+  const availableZako = ZAKO.filter(z => !z.minTier || tier >= z.minTier);
   const es = [];
-  for (let i = 0; i < 3; i++) es.push(scale(ZAKO[ri(0, ZAKO.length - 1)]));
+  for (let i = 0; i < 3; i++) es.push(scale(availableZako[ri(0, availableZako.length - 1)]));
   if (stage && stage.last) {
     es.push(scale(BOSS[2]));
   } else {

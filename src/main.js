@@ -29,7 +29,10 @@ import { WARRIOR_1, MAGE_1, PRIEST_1 } from './assets-hero-sprites.js';
 IMG['warrior1'] = WARRIOR_1;
 IMG['mage1']    = MAGE_1;
 IMG['priest1']  = PRIEST_1;
-import { BG_GRASSLAND, BG_FOREST, BG_SNOW, BG_VOLCANO, BG_TEMPLE } from './assets-battle-bg.js';
+import { BG_GRASSLAND, BG_FOREST, BG_SNOW, BG_VOLCANO, BG_TEMPLE, BG_MAKAI } from './assets-battle-bg.js';
+import { ENEMY_VORLK, ENEMY_NAAGA } from './assets-enemy-new.js';
+IMG['vorlk'] = ENEMY_VORLK;
+IMG['naaga']  = ENEMY_NAAGA;
 import { BattleBG } from './fx/battle-bg.js';
 
 // tier → バトル背景画像
@@ -38,7 +41,7 @@ const BATTLE_BG_MAP = {
   4: BG_GRASSLAND, 5: BG_GRASSLAND,
   6: BG_SNOW,      7: BG_SNOW,
   8: BG_VOLCANO,   9: BG_VOLCANO,
-  10: BG_TEMPLE,  11: BG_TEMPLE,  12: BG_TEMPLE,
+  10: BG_TEMPLE,  11: BG_MAKAI,  12: BG_MAKAI,
 };
 
 function setBattleBG(tier) {
