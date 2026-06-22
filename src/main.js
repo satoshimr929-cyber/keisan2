@@ -156,11 +156,8 @@ function renderParty(elId) {
     const isFainted = hp <= 0;
     const src = IMG[h.sprite];
     const img = src ? `<img class="hero-sprite" src="${src}" alt="${h.name}">` : '';
-    const badge = isActive
-      ? `<div class="slot-turn">⚡ばん</div>`
-      : `<div class="slot-turn"></div>`;
     return `<div class="hero-slot${isActive ? ' hero-slot-active' : ''}${isFainted ? ' hero-slot-fainted' : ''}">
-      ${badge}${img}
+      ${img}
       <div class="slot-hp-wrap"><div class="slot-hp-bar" style="width:${pct}%;background:${col}"></div></div>
       <div class="slot-name">${h.name}</div>
     </div>`;
