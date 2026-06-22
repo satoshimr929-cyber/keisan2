@@ -21,7 +21,7 @@ export const BOSS = [
 export const HEROES = [
   { name: 'ゆうしゃ',      sprite: 'warrior1' },
   { name: 'まほうつかい',   sprite: 'mage1' },
-  { name: 'とうし',         sprite: 'priest1' },
+  { name: 'そうりょ',       sprite: 'priest1' },
 ];
 
 /** ランダム整数 */

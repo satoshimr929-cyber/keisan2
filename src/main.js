@@ -621,9 +621,9 @@ $('attackBtn').addEventListener('click', () => {
         eff = Math.floor(eff * 1.3);
         attackLabel = 'まほうつかいの じゅもん！';
         if (B.streak >= 2) { eff = Math.floor(eff * 1.5); specialMsg = `✨ ${B.streak}もん れんぞく！ まほうが さえわたる！`; }
-      } else { // とうし：低火力、正解時に仲間を回復
+      } else { // そうりょ：低火力、正解時に仲間を回復
         eff = Math.floor(eff * 0.7);
-        attackLabel = 'とうしの こうげき！';
+        attackLabel = 'そうりょの こうげき！';
       }
 
       const crit = slot !== 1 && Math.random() < 0.12; // まほうつかいは独自強化あるのでクリットなし
@@ -636,7 +636,7 @@ $('attackBtn').addEventListener('click', () => {
       e.hp -= dmg; if (e.hp < 0) e.hp = 0;
       animEnemyHit(dmg, crit);
 
-      // とうしの回復
+      // そうりょの回復
       if (slot === 2) {
         let healIdx = B.partyHP.reduce((mi, hp, i) => (hp > 0 && hp / B.partyMaxHP[i] < B.partyHP[mi] / B.partyMaxHP[mi]) ? i : mi, 0);
         const healAmt = Math.min(3, B.partyMaxHP[healIdx] - B.partyHP[healIdx]);
@@ -990,7 +990,7 @@ function handleChurchAnswer() {
       $('churchCompleteBtns').style.display = 'flex';
     } else {
       const remaining = 3 - B.revivedCount;
-      setMessage([`<p class="lvup">✨ ${revivedName}が ふっかつ！</p><p>あと${remaining}にん！</p>`]);
+      setMessage([`<p class="lvup">✨ ${revivedName}が ふっかつ！</p><p>あと${remaining}人！</p>`]);
       $('continueBtn').textContent = 'つぎへ';
       B.pending = 'church_next';
       setMode('message');
@@ -1224,7 +1224,7 @@ function resumeChurch() {
     area.style.backgroundPosition = 'center top';
   }
   const remaining = 3 - B.revivedCount;
-  setMessage([`<span class="hint">あと${remaining}にん ふっかつさせよう！</span>`]);
+  setMessage([`<span class="hint">あと${remaining}人 ふっかつさせよう！</span>`]);
   $('continueBtn').textContent = 'もんだいをとく';
   B.pending = 'church_start';
   $('attackBtn').textContent = '✨ ふっかつ！';
