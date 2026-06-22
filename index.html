@@ -164,11 +164,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .enemy-hp .bar{height:11px;}
 .enemy-hp .bar>i{background:linear-gradient(180deg,#ff8a8a,var(--red));}
 .enemy-stage{height:140px;display:flex;align-items:flex-end;justify-content:center;position:relative;flex:none;}
-.enemy-sprite{height:110px;width:auto;max-width:80%;display:block;
+.enemy-sprite{height:90px;width:auto;max-width:75%;display:block;
   position:relative;z-index:1;
   image-rendering:pixelated;image-rendering:-moz-crisp-edges;
   animation:bob 2.4s ease-in-out infinite;transform-origin:center bottom;}
-.enemy-sprite.boss{height:130px;}
+.enemy-sprite.boss{height:110px;}
 /* 地面ライン */
 .ground-line{height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);flex:none;}
 @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
@@ -397,8 +397,8 @@ ruby rt{font-size:.55em;color:var(--ink-soft);}
 /* スマホ対応 */
 @media (max-height:700px){
   .enemy-stage{height:100px;}
-  .enemy-sprite{height:88px;}
-  .enemy-sprite.boss{height:104px;}
+  .enemy-sprite{height:72px;}
+  .enemy-sprite.boss{height:88px;}
   .battle-party .hero-sprite{height:54px;}
   .q-text{font-size:28px;}
 }
