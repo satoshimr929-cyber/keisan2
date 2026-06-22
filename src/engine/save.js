@@ -1,13 +1,14 @@
 /**
  * セーブ/ロード（localStorage）
  * キー互換: keisan_rpg_hero / keisan_rpg_progress
- * 追加キー: keisan_rpg_mastery / keisan_rpg_achievements
+ * 追加キー: keisan_rpg_mastery / keisan_rpg_achievements / keisan_rpg_collection
  */
 
 const KEY_HERO    = 'keisan_rpg_hero';
 const KEY_PROG    = 'keisan_rpg_progress';
 const KEY_MASTERY = 'keisan_rpg_mastery';
 const KEY_ACHIEV  = 'keisan_rpg_achievements';
+const KEY_COLL    = 'keisan_rpg_collection';
 
 export function loadHero() {
   try {
@@ -75,5 +76,18 @@ export function grantAchievement(id) {
   if (a.has(id)) return false;
   a.add(id);
   saveAchievements(a);
+  return true;
+}
+
+/** かがやきストーン コレクション */
+export function loadCollection() {
+  try { return new Set(JSON.parse(localStorage.getItem(KEY_COLL) || '[]')); } catch (_) { return new Set(); }
+}
+
+export function addToCollection(id) {
+  const c = loadCollection();
+  if (c.has(id)) return false;
+  c.add(id);
+  try { localStorage.setItem(KEY_COLL, JSON.stringify([...c])); } catch (_) {}
   return true;
 }

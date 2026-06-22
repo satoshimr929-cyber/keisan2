@@ -5,7 +5,8 @@ import { GEN, ri, fracHTML } from './data/generators.js';
 import { STAGES, STARTWEAPON } from './data/stages.js';
 import { ZAKO, BOSS, HEROES, buildDungeon, finalBossSVG, crownSVG, skullSVG } from './data/enemies.js';
 import { maxHP, charMaxHP, atkBase, needExp, equippedWeapon, ownedWeapons, stageUnlocked, clearPct, TITLES, checkProgressTitles } from './engine/progression.js';
-import { loadHero, saveHero, loadCleared, markCleared, recordMasteryResult, loadMastery, masteryPct, grantAchievement, loadAchievements } from './engine/save.js';
+import { loadHero, saveHero, loadCleared, markCleared, recordMasteryResult, loadMastery, masteryPct, grantAchievement, loadAchievements, loadCollection, addToCollection } from './engine/save.js';
+import { STONES, STONE_MAP } from './data/collection.js';
 import { Audio } from './fx/audio.js';
 import { Particles } from './fx/particles.js';
 import { Transitions } from './fx/transitions.js';
@@ -577,6 +578,7 @@ $('attackBtn').addEventListener('click', () => {
     if (B.streak >= 3) {
       if (grantAchievement('streak3')) showAchievementPopup('streak3');
     }
+    if (B.streak >= 5) tryCollect('streak5_gem');
 
   } else {
     B.totalWrong++;
@@ -661,6 +663,8 @@ function grantExp(amount, lines) {
     // レベルアチーブメント
     if (hero.level >= 10 && grantAchievement('lv10')) showAchievementPopup('lv10');
     if (hero.level >= 20 && grantAchievement('lv20')) showAchievementPopup('lv20');
+    if (hero.level >= 10) tryCollect('lv10_gem');
+    if (hero.level >= 20) tryCollect('lv20_gem');
   }
   saveHero(hero);
   updateBars();
@@ -809,6 +813,11 @@ function showClear() {
     showAchievementPopup('no_miss');
   }
 
+  // かがやきストーン付与
+  tryCollect(B.unit.id);                               // ステージ石
+  if (B.totalWrong === 0)   tryCollect('no_miss_gem');
+  if (cleared.length >= 12) tryCollect('all_clear_gem');
+
   show('screen-clear');
   Particles.spawn('levelup', window.innerWidth / 2, window.innerHeight * 0.25);
 }
@@ -837,6 +846,59 @@ function showAchievementPopup(id) {
   document.body.appendChild(pop);
   setTimeout(() => pop.classList.add('show'), 10);
   setTimeout(() => { pop.classList.remove('show'); setTimeout(() => pop.remove(), 400); }, 3000);
+}
+
+// ===== かがやきストーン =====
+function tryCollect(id) {
+  if (!addToCollection(id)) return;
+  const s = STONE_MAP[id];
+  if (!s) return;
+  const pop = document.createElement('div');
+  pop.className = 'stone-popup';
+  pop.innerHTML = `
+    <div class="stone-gem-sm" style="--c1:${s.c1};--c2:${s.c2};--bd:${s.bd};--glow:${s.glow}"></div>
+    <div class="stone-popup-info"><b>✨ あたらしい石を てにいれた！</b><br>${s.name}</div>`;
+  document.body.appendChild(pop);
+  setTimeout(() => pop.classList.add('show'), 10);
+  setTimeout(() => { pop.classList.remove('show'); setTimeout(() => pop.remove(), 400); }, 3200);
+}
+
+function stoneGemSVG(s, collected) {
+  if (!collected) {
+    return `<div class="stone-gem locked"><span class="stone-qm">?</span></div>`;
+  }
+  return `<div class="stone-gem" style="--c1:${s.c1};--c2:${s.c2};--bd:${s.bd};--glow:${s.glow}">
+    <div class="stone-shine"></div>
+  </div>`;
+}
+
+function renderCollection() {
+  const el = $('collectionGrid');
+  if (!el) return;
+  const owned = loadCollection();
+  const stageSec = STONES.filter(s => !s.special);
+  const specSec  = STONES.filter(s =>  s.special);
+  let html = '<div class="coll-section-title">🗺️ ステージストーン</div><div class="stone-grid">';
+  stageSec.forEach(s => {
+    const got = owned.has(s.id);
+    html += `<div class="stone-card${got ? ' got' : ''}">
+      ${stoneGemSVG(s, got)}
+      <div class="stone-name">${got ? s.name : '???'}</div>
+      <div class="stone-desc">${got ? s.desc : '---'}</div>
+    </div>`;
+  });
+  html += '</div><div class="coll-section-title" style="margin-top:16px">⭐ とくべつ輝石</div><div class="stone-grid">';
+  specSec.forEach(s => {
+    const got = owned.has(s.id);
+    html += `<div class="stone-card${got ? ' got' : ''}">
+      ${stoneGemSVG(s, got)}
+      <div class="stone-name">${got ? s.name : '???'}</div>
+      <div class="stone-desc">${got ? s.desc : '---'}</div>
+    </div>`;
+  });
+  const total = STONES.length, cnt = owned.size;
+  html += `</div><div class="coll-total">${cnt} / ${total} コレクト</div>`;
+  el.innerHTML = html;
 }
 
 // ===== アチーブメント画面 =====
@@ -893,6 +955,9 @@ document.querySelectorAll('[data-screen]').forEach(btn => {
     } else if (target === 'screen-achievements') {
       renderAchievements();
       show('screen-achievements');
+    } else if (target === 'screen-collection') {
+      renderCollection();
+      show('screen-collection');
     } else if (target === 'screen-mastery') {
       renderMasteryScreen();
       show('screen-mastery');
