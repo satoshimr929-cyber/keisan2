@@ -7,6 +7,19 @@ import { ZAKO, BOSS, HEROES, buildDungeon, finalBossSVG, crownSVG, skullSVG } fr
 import { maxHP, charMaxHP, atkBase, needExp, equippedWeapon, ownedWeapons, stageUnlocked, clearPct, TITLES, checkProgressTitles } from './engine/progression.js';
 import { loadHero, saveHero, loadCleared, markCleared, recordMasteryResult, loadMastery, masteryPct, grantAchievement, loadAchievements, loadCollection, addToCollection } from './engine/save.js';
 import { STONES, STONE_MAP } from './data/collection.js';
+import {
+  GEM_ST01,GEM_ST02,GEM_ST03,GEM_ST04,GEM_ST05,GEM_ST06,
+  GEM_ST07,GEM_ST08,GEM_ST09,GEM_ST10,GEM_ST11,GEM_ST12,
+  GEM_NO_MISS_GEM,GEM_STREAK5_GEM,GEM_LV10_GEM,GEM_LV20_GEM,GEM_ALL_CLEAR_GEM,
+} from './assets-gems.js';
+
+const GEM_IMGS = {
+  st01:GEM_ST01, st02:GEM_ST02, st03:GEM_ST03, st04:GEM_ST04,
+  st05:GEM_ST05, st06:GEM_ST06, st07:GEM_ST07, st08:GEM_ST08,
+  st09:GEM_ST09, st10:GEM_ST10, st11:GEM_ST11, st12:GEM_ST12,
+  no_miss_gem:GEM_NO_MISS_GEM, streak5_gem:GEM_STREAK5_GEM,
+  lv10_gem:GEM_LV10_GEM, lv20_gem:GEM_LV20_GEM, all_clear_gem:GEM_ALL_CLEAR_GEM,
+};
 import { Audio } from './fx/audio.js';
 import { Particles } from './fx/particles.js';
 import { Transitions } from './fx/transitions.js';
@@ -855,17 +868,26 @@ function tryCollect(id) {
   if (!s) return;
   const pop = document.createElement('div');
   pop.className = 'stone-popup';
-  pop.innerHTML = `
-    <div class="stone-gem-sm" style="--c1:${s.c1};--c2:${s.c2};--bd:${s.bd};--glow:${s.glow}"></div>
+  const gemSrc = GEM_IMGS[id];
+  const gemEl = gemSrc
+    ? `<img class="stone-popup-gem-img" src="${gemSrc}" alt="${s.name}">`
+    : `<div class="stone-gem-sm" style="--c1:${s.c1};--c2:${s.c2};--bd:${s.bd};--glow:${s.glow}"></div>`;
+  pop.innerHTML = `${gemEl}
     <div class="stone-popup-info"><b>✨ あたらしい石を てにいれた！</b><br>${s.name}</div>`;
   document.body.appendChild(pop);
   setTimeout(() => pop.classList.add('show'), 10);
   setTimeout(() => { pop.classList.remove('show'); setTimeout(() => pop.remove(), 400); }, 3200);
 }
 
-function stoneGemSVG(s, collected) {
+function stoneGemHTML(s, collected) {
   if (!collected) {
     return `<div class="stone-gem locked"><span class="stone-qm">?</span></div>`;
+  }
+  const src = GEM_IMGS[s.id];
+  if (src) {
+    return `<div class="stone-gem-wrap" style="--glow:${s.glow}">
+      <img class="stone-gem-img" src="${src}" alt="${s.name}">
+    </div>`;
   }
   return `<div class="stone-gem" style="--c1:${s.c1};--c2:${s.c2};--bd:${s.bd};--glow:${s.glow}">
     <div class="stone-shine"></div>
@@ -882,16 +904,16 @@ function renderCollection() {
   stageSec.forEach(s => {
     const got = owned.has(s.id);
     html += `<div class="stone-card${got ? ' got' : ''}">
-      ${stoneGemSVG(s, got)}
+      ${stoneGemHTML(s, got)}
       <div class="stone-name">${got ? s.name : '???'}</div>
       <div class="stone-desc">${got ? s.desc : '---'}</div>
     </div>`;
   });
-  html += '</div><div class="coll-section-title" style="margin-top:16px">⭐ とくべつ輝石</div><div class="stone-grid">';
+  html += '</div><div class="coll-section-title" style="margin-top:16px">⭐ とくべつ輝石</div><div class="stone-grid stone-grid-5">';
   specSec.forEach(s => {
     const got = owned.has(s.id);
     html += `<div class="stone-card${got ? ' got' : ''}">
-      ${stoneGemSVG(s, got)}
+      ${stoneGemHTML(s, got)}
       <div class="stone-name">${got ? s.name : '???'}</div>
       <div class="stone-desc">${got ? s.desc : '---'}</div>
     </div>`;

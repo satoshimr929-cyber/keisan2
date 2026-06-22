@@ -390,12 +390,28 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 /* ===== かがやきストーン コレクション ===== */
 .coll-section-title{font-size:13px;font-weight:800;color:var(--gold);letter-spacing:.08em;margin:4px 0 8px;}
 .stone-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stone-grid-5{grid-template-columns:repeat(5,1fr);gap:8px;}
 .stone-card{display:flex;flex-direction:column;align-items:center;gap:5px;
   padding:10px 6px 8px;border-radius:10px;
   background:var(--panel);border:2px solid #39406a;opacity:.5;}
 .stone-card.got{border-color:var(--gold);opacity:1;
   box-shadow:0 0 0 1px rgba(255,207,63,.18),0 2px 12px rgba(0,0,0,.5);}
-/* CSS グラデーション gem */
+/* 画像 gem ラッパー */
+.stone-gem-wrap{
+  width:52px;height:52px;border-radius:8px;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  animation:stone-pulse 3s ease-in-out infinite;
+}
+.stone-gem-img{
+  width:52px;height:52px;object-fit:contain;
+  image-rendering:pixelated;image-rendering:-moz-crisp-edges;
+  filter:drop-shadow(0 0 6px var(--glow));
+}
+.stone-popup-gem-img{
+  width:36px;height:36px;object-fit:contain;
+  image-rendering:pixelated;flex:none;
+}
+/* CSS グラデーション gem (フォールバック) */
 .stone-gem{
   width:44px;height:44px;border-radius:6px;position:relative;overflow:hidden;
   background:linear-gradient(135deg,var(--c1),var(--c2));
