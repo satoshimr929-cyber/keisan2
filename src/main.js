@@ -31,6 +31,7 @@ IMG['mage1']    = MAGE_1;
 IMG['priest1']  = PRIEST_1;
 import { BG_GRASSLAND, BG_FOREST, BG_SNOW, BG_VOLCANO, BG_TEMPLE, BG_MAKAI } from './assets-battle-bg.js';
 import { ENEMY_VORLK, ENEMY_NAAGA } from './assets-enemy-new.js';
+import { COFFIN_IMG } from './assets-coffin.js';
 IMG['vorlk'] = ENEMY_VORLK;
 IMG['naaga']  = ENEMY_NAAGA;
 import { BattleBG } from './fx/battle-bg.js';
@@ -155,9 +156,11 @@ function renderParty(elId) {
     const isActive  = B.activeSlot === i && hp > 0;
     const isFainted = hp <= 0;
     const src = IMG[h.sprite];
-    const img = src ? `<img class="hero-sprite" src="${src}" alt="${h.name}">` : '';
+    const imgEl = isFainted
+      ? `<img class="hero-sprite coffin-sprite" src="${COFFIN_IMG}" alt="戦闘不能">`
+      : (src ? `<img class="hero-sprite" src="${src}" alt="${h.name}">` : '');
     return `<div class="hero-slot${isActive ? ' hero-slot-active' : ''}${isFainted ? ' hero-slot-fainted' : ''}">
-      ${img}
+      ${imgEl}
       <div class="slot-hp-wrap"><div class="slot-hp-bar" style="width:${pct}%;background:${col}"></div></div>
       <div class="slot-name">${h.name}</div>
     </div>`;
@@ -182,6 +185,7 @@ function initTitle() {
 function renderHeroWin(winId) {
   const el = $(winId);
   if (!el) return;
+  if (winId === 'heroWinBattle') { renderPartyStatus(); return; }
   const mh = maxHP(hero.level), nd = needExp(hero.level);
   const eq = equippedWeapon();
   el.innerHTML = `
@@ -191,8 +195,8 @@ function renderHeroWin(winId) {
     </div>
     <div class="bar-row">
       <span class="bar-tag">HP</span>
-      <div class="bar hp"><i id="${winId}_hp" style="width:${winId === 'heroWinBattle' ? Math.max(0, B.heroHP / mh * 100) : 100}%"></i></div>
-      <span class="bar-num" id="${winId}_hpn">${winId === 'heroWinBattle' ? B.heroHP : mh} / ${mh}</span>
+      <div class="bar hp"><i id="${winId}_hp" style="width:100%"></i></div>
+      <span class="bar-num">${mh} / ${mh}</span>
     </div>
     <div class="bar-row">
       <span class="bar-tag">EXP</span>
@@ -202,14 +206,41 @@ function renderHeroWin(winId) {
     <div class="equip-line">${wIco(eq)} <small>${eq.name}（＋${eq.atk}）</small></div>`;
 }
 
+function renderPartyStatus() {
+  const el = $('heroWinBattle');
+  if (!el) return;
+  const eq = equippedWeapon();
+  const cols = HEROES.map((h, i) => {
+    const hp = Math.max(0, B.partyHP[i]);
+    const maxHp = B.partyMaxHP[i];
+    const pct = maxHp > 0 ? hp / maxHp * 100 : 0;
+    const col = pct > 50 ? 'var(--hp)' : pct > 25 ? 'var(--exp)' : 'var(--red)';
+    const dead = hp <= 0;
+    return `<div class="party-stat${dead ? ' party-stat-dead' : ''}">
+      <div class="party-stat-name">${h.name}</div>
+      <div class="party-stat-bar-wrap"><div id="partyHpBar${i}" class="party-stat-bar" style="width:${pct}%;background:${col}"></div></div>
+      <div id="partyHpNum${i}" class="party-stat-num">${hp}/${maxHp}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="party-win">${cols}</div>
+    <div class="party-stat-foot">Lv ${hero.level} &nbsp;${wIco(eq)}&thinsp;${eq.name}（＋${eq.atk}）</div>`;
+}
+
 function updateBars() {
-  const mh = maxHP(hero.level);
-  const hb = $('heroWinBattle_hp'), hn = $('heroWinBattle_hpn');
-  if (hb) hb.style.width = Math.max(0, B.heroHP / mh * 100) + '%';
-  if (hn) hn.textContent = `${B.heroHP} / ${mh}`;
-  const nd = needExp(hero.level);
-  const eb = $('heroWinBattle_exp');
-  if (eb) eb.style.width = (hero.exp / nd * 100) + '%';
+  HEROES.forEach((_, i) => {
+    const bar = $(`partyHpBar${i}`);
+    const num = $(`partyHpNum${i}`);
+    if (!bar) return;
+    const hp = Math.max(0, B.partyHP[i]);
+    const maxHp = B.partyMaxHP[i];
+    const pct = maxHp > 0 ? hp / maxHp * 100 : 0;
+    const col = pct > 50 ? 'var(--hp)' : pct > 25 ? 'var(--exp)' : 'var(--red)';
+    bar.style.width = pct + '%';
+    bar.style.background = col;
+    if (num) num.textContent = `${hp}/${maxHp}`;
+    const slot = bar.closest('.party-stat');
+    if (slot) slot.classList.toggle('party-stat-dead', hp <= 0);
+  });
   const e = B.enemies[B.idx];
   const ehb = $('enemyHpBar');
   const ehn = $('enemyHpNum');

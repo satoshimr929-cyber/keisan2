@@ -94,7 +94,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 #muteBtn{padding:8px 14px;border-radius:8px;background:var(--panel);border:2px solid #39406a;
   font-size:16px;color:var(--ink-soft);}
 
-/* ===== ヒーローウィンドウ ===== */
+/* ===== ヒーローウィンドウ（マップ） ===== */
 .hero-win{margin-bottom:12px;}
 .hero-line{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
 .hero-name{font-weight:800;font-size:15px;}
@@ -108,6 +108,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .bar.hp>i{background:linear-gradient(180deg,#6ff09a,var(--hp));}
 .bar.exp>i{background:linear-gradient(180deg,#ffe27a,var(--exp));}
 .bar-num{font-size:11px;font-weight:800;color:var(--ink-soft);min-width:54px;text-align:right;}
+/* ===== パーティステータス（バトル） ===== */
+.party-win{display:flex;gap:6px;margin-bottom:6px;}
+.party-stat{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0;}
+.party-stat-name{font-size:11px;font-weight:800;color:var(--ink);text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.party-stat-dead .party-stat-name{color:#ff8888;}
+.party-stat-bar-wrap{height:8px;background:#1e2546;border-radius:4px;overflow:hidden;border:1px solid #2c3461;}
+.party-stat-bar{height:100%;border-radius:4px;transition:width .35s ease;}
+.party-stat-num{font-size:10px;font-weight:800;color:var(--ink-soft);text-align:center;}
+.party-stat-foot{font-size:10px;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:5px;}
 
 /* ===== ストーリー画面 ===== */
 #screen-story{justify-content:center;align-items:center;gap:14px;text-align:center;padding:24px 14px;}
@@ -210,8 +220,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 /* 3人個別表示 */
 .hero-slot{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;}
 .slot-bob{animation:bob 2.4s ease-in-out infinite;}
-.hero-slot-fainted{opacity:.4;filter:grayscale(1);}
-.hero-slot-fainted .hero-sprite{animation:none!important;}
+.hero-slot-fainted{opacity:.5;}
+.hero-slot-fainted .hero-sprite{animation:none!important;filter:grayscale(1);}
+.hero-slot-fainted .coffin-sprite{opacity:1;filter:none;animation:none!important;}
 .slot-hp-wrap{width:48px;height:5px;background:#1e2546;border-radius:3px;overflow:hidden;border:1px solid #2c3461;}
 .slot-hp-bar{height:100%;border-radius:3px;transition:width .35s ease,background .35s ease;}
 .slot-name{font-size:9px;font-weight:800;color:var(--ink-soft);text-align:center;}
