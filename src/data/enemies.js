@@ -6,16 +6,19 @@ export const ZAKO = [
   { name: 'ペブルキン',    sprite: 'pebblekin',   hp: 12, exp: 6,  atk: 4 },
   { name: 'スパイクビートル',sprite: 'beetle',      hp: 14, exp: 8,  atk: 5 },
   { name: 'リーフインプ',   sprite: 'leafimp',     hp: 13, exp: 7,  atk: 4 },
+  { name: '森賊ゴブリン',   sprite: 'goblin',      hp: 13, exp: 7,  atk: 5 },
   { name: 'シンダーラット', sprite: 'cinderrat',   hp: 14, exp: 9,  atk: 5 },
   { name: 'ボーンアーチャー',sprite: 'bonearcher',  hp: 15, exp: 10, atk: 6 },
+  { name: '鉄機兵ガルドス', sprite: 'mecha',       hp: 17, exp: 12, atk: 7,  minTier: 7 },
   { name: '魔晶鬼ヴォルク', sprite: 'vorlk',       hp: 16, exp: 16, atk: 9,  minTier: 10 },
   { name: '冥蛇ナーガ',     sprite: 'naaga',       hp: 15, exp: 14, atk: 8,  minTier: 10 },
 ];
 
 export const BOSS = [
-  { name: 'ゴーレムロード',          sprite: 'golemlord', hp: 48, exp: 32, atk: 9,  boss: true },
-  { name: 'アークメイジ・ウロボロス',  sprite: 'archmage',  hp: 46, exp: 30, atk: 8,  boss: true },
-  { name: 'けいさん大王',             sprite: '__final',   hp: 65, exp: 50, atk: 12, boss: true, final: true },
+  { name: 'ゴーレムロード',          sprite: 'golemlord',  hp: 48, exp: 32, atk: 9,  boss: true },
+  { name: 'アークメイジ・ウロボロス',  sprite: 'archmage',   hp: 46, exp: 30, atk: 8,  boss: true },
+  { name: '氷竜ブリザドラ',           sprite: 'icedragon',  hp: 52, exp: 36, atk: 10, boss: true, minTier: 5 },
+  { name: 'けいさん大王',             sprite: '__final',    hp: 65, exp: 50, atk: 12, boss: true, final: true },
 ];
 
 export const HEROES = [
@@ -38,12 +41,13 @@ export function buildDungeon(stage) {
     return e;
   }
   const availableZako = ZAKO.filter(z => !z.minTier || tier >= z.minTier);
+  const availableBoss = BOSS.filter(b => !b.final && (!b.minTier || tier >= b.minTier));
   const es = [];
   for (let i = 0; i < 3; i++) es.push(scale(availableZako[ri(0, availableZako.length - 1)]));
   if (stage && stage.last) {
-    es.push(scale(BOSS[2]));
+    es.push(scale(BOSS[BOSS.length - 1]));
   } else {
-    es.push(scale(BOSS[ri(0, 1)]));
+    es.push(scale(availableBoss[ri(0, availableBoss.length - 1)]));
   }
   return es;
 }

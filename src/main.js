@@ -31,9 +31,13 @@ IMG['mage1']    = MAGE_1;
 IMG['priest1']  = PRIEST_1;
 import { BG_GRASSLAND, BG_FOREST, BG_SNOW, BG_VOLCANO, BG_TEMPLE, BG_MAKAI, BG_CHURCH } from './assets-battle-bg.js';
 import { ENEMY_VORLK, ENEMY_NAAGA } from './assets-enemy-new.js';
+import { ENEMY_GOBLIN, ENEMY_MECHA, ENEMY_ICEDRAGON } from './assets-enemy-new2.js';
 import { COFFIN_IMG } from './assets-coffin.js';
-IMG['vorlk'] = ENEMY_VORLK;
-IMG['naaga']  = ENEMY_NAAGA;
+IMG['vorlk']     = ENEMY_VORLK;
+IMG['naaga']     = ENEMY_NAAGA;
+IMG['goblin']    = ENEMY_GOBLIN;
+IMG['mecha']     = ENEMY_MECHA;
+IMG['icedragon'] = ENEMY_ICEDRAGON;
 import { BattleBG } from './fx/battle-bg.js';
 
 // tier → バトル背景画像
