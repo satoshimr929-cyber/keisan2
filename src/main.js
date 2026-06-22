@@ -933,10 +933,11 @@ function showOver() {
 function showChurch() {
   B.churchMode = true;
   B.revivedCount = 0;
+  BattleBG.stop(); clearBattleBG();
+  $('heroWinBattle').style.display = 'none';
+  $('enemyHpRow').style.display = 'none';
   $('enemyName').textContent = '⛪ 教会';
   $('enemyDots').innerHTML = '';
-  const ehb = $('enemyHpBar'); if (ehb) ehb.style.width = '0%';
-  const ehn = $('enemyHpNum'); if (ehn) ehn.textContent = '';
   const sprite = document.querySelector('#enemyStage #enemySprite');
   if (sprite) sprite.style.display = 'none';
   const area = document.querySelector('.enemy-area');
@@ -1170,6 +1171,8 @@ $('overFlee').addEventListener('click', () => { Audio.play('tap'); openMap(); })
 // 教会ボタン
 function exitChurch() {
   B.churchMode = false;
+  $('heroWinBattle').style.display = '';
+  $('enemyHpRow').style.display = '';
   $('attackBtn').textContent = '⚔️ こうげき！';
   $('hintBtn').style.display = 'inline-flex';
   $('inputCluster').style.display = '';
@@ -1203,17 +1206,15 @@ $('churchEscapeBtn').addEventListener('click', () => {
 });
 
 function resumeChurch() {
-  $('battleTitle').textContent = B.unit ? B.unit.name : '';
-  renderHeroWin('heroWinBattle');
-  renderParty('battleParty');
   show('screen-battle');
-  setBattleBG(B.unit ? B.unit.tier || 1 : 1);
-  BattleBG.start(B.unit ? B.unit.tier || 1 : 1, false);
+  $('battleTitle').textContent = B.unit ? B.unit.name : '';
+  BattleBG.stop(); clearBattleBG();
+  $('heroWinBattle').style.display = 'none';
+  $('enemyHpRow').style.display = 'none';
+  renderParty('battleParty');
   B.churchMode = true;
   $('enemyName').textContent = '⛪ 教会';
   $('enemyDots').innerHTML = '';
-  const ehb = $('enemyHpBar'); if (ehb) ehb.style.width = '0%';
-  const ehn = $('enemyHpNum'); if (ehn) ehn.textContent = '';
   const sprite = document.querySelector('#enemyStage #enemySprite');
   if (sprite) sprite.style.display = 'none';
   const area = document.querySelector('.enemy-area');
