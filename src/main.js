@@ -636,14 +636,19 @@ $('attackBtn').addEventListener('click', () => {
       e.hp -= dmg; if (e.hp < 0) e.hp = 0;
       animEnemyHit(dmg, crit);
 
-      // そうりょの回復
+      // そうりょの回復（生きている仲間のみ対象）
       if (slot === 2) {
-        let healIdx = B.partyHP.reduce((mi, hp, i) => (hp > 0 && hp / B.partyMaxHP[i] < B.partyHP[mi] / B.partyMaxHP[mi]) ? i : mi, 0);
-        const healAmt = Math.min(3, B.partyMaxHP[healIdx] - B.partyHP[healIdx]);
-        if (healAmt > 0) {
-          B.partyHP[healIdx] += healAmt;
-          syncPartyHP();
-          lines.push(`<p class="good">🙏 ${HEROES[healIdx].name}を ${healAmt}かいふく！</p>`);
+        const living = B.partyHP.map((hp, i) => ({ hp, i })).filter(({ hp }) => hp > 0);
+        if (living.length > 0) {
+          const { i: healIdx } = living.reduce((best, cur) =>
+            cur.hp / B.partyMaxHP[cur.i] < best.hp / B.partyMaxHP[best.i] ? cur : best
+          );
+          const healAmt = Math.min(3, B.partyMaxHP[healIdx] - B.partyHP[healIdx]);
+          if (healAmt > 0) {
+            B.partyHP[healIdx] += healAmt;
+            syncPartyHP();
+            lines.push(`<p class="good">🙏 ${HEROES[healIdx].name}を ${healAmt}かいふく！</p>`);
+          }
         }
       }
 
@@ -987,6 +992,7 @@ function handleChurchAnswer() {
       setMessage([`<p class="lvup">🌟 なかまたちが みんな ふっかつした！</p>`]);
       $('inputCluster').style.display = 'none';
       $('continueBtn').style.display = 'none';
+      $('churchEscapeBtn').style.display = 'none';
       $('churchCompleteBtns').style.display = 'flex';
     } else {
       const remaining = 3 - B.revivedCount;
