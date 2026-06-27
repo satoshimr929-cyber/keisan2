@@ -265,6 +265,7 @@ function updateBars() {
     const col = pct > 50 ? 'var(--hp)' : pct > 25 ? 'var(--exp)' : 'var(--red)';
     bar.style.width = pct + '%';
     bar.style.background = col;
+    bar.classList.toggle('warning', hp > 0 && pct < 25);
     if (num) num.textContent = `${hp}/${maxHp}`;
     const slot = bar.closest('.party-stat');
     if (slot) slot.classList.toggle('party-stat-dead', hp <= 0);
@@ -344,6 +345,8 @@ function startBattle(unit) {
   $('inputCluster').style.display = '';
   $('continueBtn').style.display = 'none';
   $('churchCompleteBtns').style.display = 'none';
+  const sb = $('streakBar'); if (sb) sb.style.display = 'none';
+  const ebar = $('enemyHpBar'); if (ebar) ebar.classList.remove('boss-hp');
 
   $('battleTitle').textContent = unit.name;
   renderHeroWin('heroWinBattle');
@@ -433,6 +436,8 @@ function renderEnemy(first) {
   img.src = src;
   img.alt = e.name;
   img.style.display = '';
+  const hpBar = $('enemyHpBar');
+  if (hpBar) hpBar.classList.toggle('boss-hp', !!e.boss);
   updateBars();
 }
 
@@ -525,6 +530,7 @@ function refreshBoxes() {
   });
   const all = B.fields.every(f => f.value !== '');
   $('attackBtn').disabled = !all || B.locked;
+  $('attackBtn').classList.toggle('ready', all && !B.locked);
 }
 
 function buildKeypad() {
@@ -638,7 +644,7 @@ $('attackBtn').addEventListener('click', () => {
       lines.push(`<p>${e.name}に ${dmg}の ダメージ！</p>`);
 
       e.hp -= dmg; if (e.hp < 0) e.hp = 0;
-      animEnemyHit(dmg, crit);
+      animEnemyHit(dmg, crit, slot);
 
       // そうりょの回復（生きている仲間のみ対象）
       if (slot === 2) {
@@ -717,6 +723,7 @@ $('attackBtn').addEventListener('click', () => {
     }
   }
 
+  updateStreakDisplay();
   setMessage(lines);
   $('continueBtn').textContent = B.pending === 'clear' ? 'けっかを みる'
     : B.pending === 'gameover' ? 'ぼうけんの きろく' : 'つづける';
@@ -732,7 +739,22 @@ $('continueBtn').addEventListener('click', () => {
     case 'spawn':
       B.idx++;
       renderEnemy();
-      setMessage([`<span class="hint">${B.enemies[B.idx].name}が あらわれた！</span>`]);
+      { const spawnE = B.enemies[B.idx];
+        if (spawnE.boss) {
+          Transitions.flash('#880022', 220);
+          setMessage([
+            `<p class="bad">⚠️ ボスが あらわれた！</p>`,
+            `<p class="lvup">★ ${spawnE.name}！</p>`,
+            `<span class="hint">こうげきに そなえろ！</span>`,
+          ]);
+          const ebar = $('enemyHpBar');
+          if (ebar) ebar.classList.add('boss-hp');
+        } else {
+          const ebar = $('enemyHpBar');
+          if (ebar) ebar.classList.remove('boss-hp');
+          setMessage([`<span class="hint">${spawnE.name}が あらわれた！</span>`]);
+        }
+      }
       B.pending = 'fight'; setMode('message');
       $('continueBtn').textContent = 'つづける';
       break;
@@ -757,9 +779,10 @@ function grantExp(amount, lines) {
     B.partyMaxHP = HEROES.map((_, i) => charMaxHP(i, hero.level));
     B.partyHP    = [...B.partyMaxHP]; // レベルアップで全員全回復
     syncPartyHP();
-    lines.push('<p class="lvup">✨ レベルが あがった！</p>');
-    lines.push(`<p class="lvup">Lv${hero.level}！ なかま全員 たいりょく かいふく！</p>`);
+    lines.push(`<p class="lvup">🌟 レベルアップ！ Lv ${hero.level}！</p>`);
+    lines.push(`<p class="lvup">なかま全員 たいりょく かいふく！</p>`);
     Audio.play('levelup');
+    Transitions.flash('#ffcf3f', 280);
     Particles.spawn('levelup', getParticleCenter('x'), getParticleCenter('y'));
 
     // レベルアチーブメント
@@ -773,23 +796,36 @@ function grantExp(amount, lines) {
 }
 
 // ===== アニメーション =====
-function animEnemyHit(dmg, crit) {
+function animEnemyHit(dmg, crit, slot = 0) {
   const s = $('enemySprite');
   if (s) { s.classList.remove('hit'); void s.offsetWidth; s.classList.add('hit'); }
   Audio.play('attack');
-  Transitions.flash(crit ? '#ffcf3f' : '#ffffff', 120);
+  Transitions.flash(crit ? '#ffcf3f' : slot === 1 ? '#aa44ff' : '#ffffff', crit ? 160 : 100);
 
   const stage = $('enemyStage');
   const f = document.createElement('div');
-  f.className = 'float-dmg' + (crit ? ' crit' : '');
+  f.className = `float-dmg slot-${slot}${crit ? ' crit' : ''}`;
   f.textContent = dmg;
   stage.appendChild(f);
-  setTimeout(() => { if (f.parentNode) f.parentNode.removeChild(f); }, 1000);
+  setTimeout(() => { if (f.parentNode) f.parentNode.removeChild(f); }, 1300);
 }
 
 function animEnemyDefeat() {
   const s = $('enemySprite');
   if (s) s.classList.add('defeated');
+}
+
+function updateStreakDisplay() {
+  const bar = $('streakBar');
+  if (!bar) return;
+  if (B.streak >= 2) {
+    bar.style.display = 'flex';
+    bar.className = `streak-bar${B.streak >= 5 ? ' hot' : ''}`;
+    const fire = B.streak >= 5 ? '🔥🔥' : '🔥';
+    bar.textContent = `${fire} ${B.streak}もん れんぞく！`;
+  } else {
+    bar.style.display = 'none';
+  }
 }
 
 function animHeroHit(slot) {
