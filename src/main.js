@@ -571,6 +571,16 @@ function onDel() {
 function setMode(m) {
   $('inputCluster').style.display = m === 'input' ? 'block' : 'none';
   $('continueBtn').style.display = m === 'input' ? 'none' : 'block';
+  if (m === 'message') {
+    // 攻撃後・メッセージ表示時：敵が見えるようトップにスクロール
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 60);
+  } else {
+    // 入力モード時：問題欄が見えるようスクロール
+    setTimeout(() => {
+      const sw = document.querySelector('.spell-win');
+      if (sw) sw.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 80);
+  }
 }
 
 function setMessage(lines) {
