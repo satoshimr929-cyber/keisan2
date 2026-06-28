@@ -654,7 +654,7 @@ $('attackBtn').addEventListener('click', () => {
       lines.push(`<p>${e.name}に ${dmg}の ダメージ！</p>`);
 
       e.hp -= dmg; if (e.hp < 0) e.hp = 0;
-      animEnemyHit(dmg, crit, slot);
+      setTimeout(() => animEnemyHit(dmg, crit, slot), 360);
 
       // そうりょの回復（生きている仲間のみ対象）
       if (slot === 2) {
@@ -724,7 +724,7 @@ $('attackBtn').addEventListener('click', () => {
         lines.push(`<p class="bad">😵 ${HEROES[slot].name}が たおれた…！</p>`);
       }
 
-      animHeroHit(slot);
+      setTimeout(() => animHeroHit(slot), 360);
       advanceActiveSlot();
       renderParty('battleParty');
       updateBars();
