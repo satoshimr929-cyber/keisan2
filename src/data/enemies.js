@@ -1,6 +1,7 @@
 /**
  * 敵データ（既存スプライトキーを流用）
  */
+import { FINAL_BOSS_IMG } from '../assets-final-boss.js';
 
 export const ZAKO = [
   { name: 'ペブルキン',    sprite: 'pebblekin',   hp: 12, exp: 6,  atk: 4 },
@@ -55,6 +56,10 @@ export function buildDungeon(stage) {
 const DK = '#0a0e1c';
 
 /** ラスボス用インラインSVG */
+export function finalBossImgURL() {
+  return FINAL_BOSS_IMG;
+}
+
 export function finalBossSVG(size = 150) {
   const body = `
     <path d="M30 42 L20 20 L36 36 Z" fill="#c04040" stroke="${DK}" stroke-width="3"/>

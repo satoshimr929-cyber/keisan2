@@ -3,7 +3,7 @@
  */
 import { GEN, ri, fracHTML } from './data/generators.js';
 import { STAGES, STARTWEAPON } from './data/stages.js';
-import { ZAKO, BOSS, HEROES, buildDungeon, finalBossSVG, crownSVG, skullSVG } from './data/enemies.js';
+import { ZAKO, BOSS, HEROES, buildDungeon, finalBossSVG, finalBossImgURL, crownSVG, skullSVG } from './data/enemies.js';
 import { maxHP, charMaxHP, atkBase, needExp, equippedWeapon, ownedWeapons, stageUnlocked, clearPct, TITLES, checkProgressTitles } from './engine/progression.js';
 import { loadHero, saveHero, loadCleared, markCleared, recordMasteryResult, loadMastery, masteryPct, grantAchievement, loadAchievements, loadCollection, addToCollection } from './engine/save.js';
 import { STONES, STONE_MAP } from './data/collection.js';
@@ -143,7 +143,7 @@ function heroSpriteHTML(h, cls = '') {
 }
 
 function enemySpriteURL(e) {
-  if (e.sprite === '__final') return finalBossSVG(150);
+  if (e.sprite === '__final') return finalBossImgURL();
   return IMG[e.sprite] || finalBossSVG(100);
 }
 
