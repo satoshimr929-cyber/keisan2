@@ -282,6 +282,8 @@ function updateBars() {
 
 // ===== ワールドマップ =====
 function openMap() {
+  Audio.stopBGM();
+  Audio.startBGM('map');
   renderHeroWin('heroWinMap');
   renderBag();
   const notice = $('churchNotice');
