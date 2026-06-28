@@ -140,6 +140,7 @@ export const Audio = {
     this.stopBGM();
     try {
       const ac = ctx();
+      ac.resume().catch(() => {});
 
       // マスターゲイン（BGM全体のフェードアウト用）
       const master = ac.createGain();
@@ -377,11 +378,11 @@ export const Audio = {
     if (_bgmMaster) {
       try {
         const t = ctx().currentTime;
-        _bgmMaster.gain.setValueAtTime(_bgmMaster.gain.value, t);
-        _bgmMaster.gain.linearRampToValueAtTime(0, t + 0.35);
+        _bgmMaster.gain.cancelScheduledValues(t);
+        _bgmMaster.gain.setTargetAtTime(0, t, 0.03);
         const m = _bgmMaster;
         _bgmMaster = null;
-        setTimeout(() => { try { m.disconnect(); } catch (_) {} }, 500);
+        setTimeout(() => { try { m.disconnect(); } catch (_) {} }, 200);
       } catch (_) { _bgmMaster = null; }
     }
   },
