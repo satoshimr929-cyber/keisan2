@@ -136,7 +136,8 @@ export const Audio = {
   _bgmTimer: null,
 
   startBGM(type = 'battle') {
-    if (_muted || this._bgmTimer) return;
+    if (_muted) return;
+    this.stopBGM();
     try {
       const ac = ctx();
 
