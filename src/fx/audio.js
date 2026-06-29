@@ -60,72 +60,271 @@ export const Audio = {
     try {
       const ac = ctx();
       const t = ac.currentTime;
+      const D = ac.destination;
+
+      // ゲイン生成ヘルパー(D直結)
+      const mk = (vol, when, dur) => {
+        const nd = ac.createGain();
+        nd.gain.setValueAtTime(vol, when);
+        nd.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+        nd.connect(D);
+        return nd;
+      };
+
       switch (type) {
+        // ─────────────────────────────────
         case 'tap': {
-          const g = gain(0.12, t, 0.08);
-          osc('sine', 880, g, t, 0.08);
+          // カチッとした二重クリック
+          const g1 = mk(0.18, t, 0.055);
+          osc('sine', 1100, g1, t, 0.045);
+          const g2 = mk(0.12, t, 0.035);
+          osc('sine', 340, g2, t, 0.028);
           break;
         }
+
+        // ─────────────────────────────────
         case 'correct': {
-          const g = gain(0.25, t, 0.35);
-          osc('triangle', 660, g, t, 0.10);
-          osc('triangle', 880, g, t + 0.10, 0.10);
-          osc('triangle', 1100, g, t + 0.20, 0.15);
-          break;
-        }
-        case 'wrong': {
-          const g = gain(0.18, t, 0.30);
-          osc('sawtooth', 220, g, t, 0.15);
-          osc('sawtooth', 165, g, t + 0.12, 0.18);
-          break;
-        }
-        case 'attack': {
-          const g = gain(0.20, t, 0.20);
-          osc('sawtooth', 330, g, t, 0.05);
-          const gn = gain(0.10, t, 0.15);
-          noise(gn, t, 0.15);
-          break;
-        }
-        case 'crit': {
-          const g = gain(0.30, t, 0.50);
-          osc('square', 440, g, t, 0.10);
-          osc('square', 660, g, t + 0.05, 0.15);
-          osc('square', 880, g, t + 0.15, 0.20);
-          const gn = gain(0.15, t, 0.12);
-          noise(gn, t, 0.12);
-          break;
-        }
-        case 'victory': {
-          const g = gain(0.22, t, 1.4);
-          [523, 659, 784, 1047].forEach((f, i) => osc('triangle', f, g, t + i * 0.18, 0.35));
-          break;
-        }
-        case 'levelup': {
-          const g = gain(0.22, t, 1.2);
-          [392, 523, 659, 784, 1047].forEach((f, i) => {
-            osc('triangle', f, g, t + i * 0.14, 0.28);
-            osc('sine',     f * 2, g, t + i * 0.14, 0.14);
+          // Cメジャーコードブルーム + 上昇スパークル
+          [523, 659, 784].forEach(f => {
+            const gc = mk(0.11, t, 0.50);
+            osc('triangle', f, gc, t, 0.45);
+            const gh = mk(0.04, t, 0.30);
+            osc('sine', f * 2, gh, t, 0.25);
+          });
+          [523, 659, 784, 1047, 1319].forEach((f, i) => {
+            const d = t + 0.04 + i * 0.08;
+            const ga = mk(0.14, d, 0.40);
+            osc('sine', f, ga, d, 0.35);
           });
           break;
         }
+
+        // ─────────────────────────────────
+        case 'wrong': {
+          // バズ下降 + ノイズインパクト + 不協和音
+          const gb = ac.createGain();
+          gb.gain.setValueAtTime(0.28, t);
+          gb.gain.linearRampToValueAtTime(0.22, t + 0.12);
+          gb.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+          gb.connect(D);
+          const ob = ac.createOscillator();
+          ob.type = 'square';
+          ob.frequency.setValueAtTime(210, t);
+          ob.frequency.linearRampToValueAtTime(118, t + 0.32);
+          ob.connect(gb); ob.start(t); ob.stop(t + 0.38);
+          const gni = mk(0.18, t, 0.10);
+          noise(gni, t, 0.10);
+          const gdi = mk(0.09, t + 0.06, 0.30);
+          osc('sawtooth', 178, gdi, t + 0.06, 0.26);
+          break;
+        }
+
+        // ─────────────────────────────────
+        case 'attack': {
+          // バンドパスノイズ「ウーシュ」
+          const bpf = ac.createBiquadFilter();
+          bpf.type = 'bandpass';
+          bpf.frequency.setValueAtTime(700, t);
+          bpf.frequency.exponentialRampToValueAtTime(3200, t + 0.09);
+          bpf.Q.value = 0.9;
+          const gw = ac.createGain();
+          gw.gain.setValueAtTime(0.001, t);
+          gw.gain.linearRampToValueAtTime(0.22, t + 0.03);
+          gw.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+          bpf.connect(gw); gw.connect(D);
+          noise(bpf, t, 0.14);
+          // 重低音インパクト
+          const gi = ac.createGain();
+          gi.gain.setValueAtTime(0.40, t + 0.07);
+          gi.gain.exponentialRampToValueAtTime(0.0001, t + 0.30);
+          gi.connect(D);
+          const oi = ac.createOscillator();
+          oi.type = 'sawtooth';
+          oi.frequency.setValueAtTime(220, t + 0.07);
+          oi.frequency.exponentialRampToValueAtTime(52, t + 0.27);
+          oi.connect(gi); oi.start(t + 0.07); oi.stop(t + 0.30);
+          // メタルリング残響
+          const gm = mk(0.07, t + 0.07, 0.45);
+          osc('triangle', 1800, gm, t + 0.07, 0.40);
+          break;
+        }
+
+        // ─────────────────────────────────
+        case 'crit': {
+          // 超重低音ドーン
+          const gb2 = ac.createGain();
+          gb2.gain.setValueAtTime(0.48, t);
+          gb2.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+          gb2.connect(D);
+          const ob2 = ac.createOscillator();
+          ob2.type = 'sawtooth';
+          ob2.frequency.setValueAtTime(300, t);
+          ob2.frequency.exponentialRampToValueAtTime(44, t + 0.40);
+          ob2.connect(gb2); ob2.start(t); ob2.stop(t + 0.45);
+          // ノイズクラッシュ × 2
+          const gnc = mk(0.28, t, 0.20);
+          noise(gnc, t, 0.20);
+          const gnc2 = mk(0.10, t + 0.06, 0.30);
+          noise(gnc2, t + 0.06, 0.25);
+          // 上昇メタルシマー4連
+          [550, 740, 1100, 1650].forEach((f, i) => {
+            const d = t + 0.05 + i * 0.075;
+            const gs = mk(0.13, d, 0.55);
+            osc('square', f, gs, d, 0.50);
+          });
+          break;
+        }
+
+        // ─────────────────────────────────
+        case 'victory': {
+          // ドラムロール(8連打クレッシェンド)
+          for (let i = 0; i < 8; i++) {
+            const d = t + i * 0.045;
+            const gnr = mk(0.04 + i * 0.012, d, 0.06);
+            noise(gnr, d, 0.05);
+            const gsr = mk(0.025 + i * 0.007, d, 0.065);
+            osc('sine', 185, gsr, d, 0.055);
+          }
+          // ファンファーレ C-C-C-Ab-C-Eb-G
+          const vMel = [523, 523, 523, 415, 523, 622, 784];
+          const vDurs = [0.14, 0.14, 0.14, 0.10, 0.14, 0.19, 0.55];
+          let vOff = 0.40;
+          vMel.forEach((f, i) => {
+            const d = t + vOff;
+            const gf = mk(0.22, d, vDurs[i]);
+            osc('triangle', f, gf, d, vDurs[i] * 0.86);
+            const gf5 = mk(0.09, d, vDurs[i]);
+            osc('triangle', f * 1.498, gf5, d, vDurs[i] * 0.86);
+            vOff += vDurs[i];
+          });
+          // 凱旋コード C-E-G-C + ベルスパークル
+          const tc = t + 1.72;
+          [523, 659, 784, 1047].forEach(f => {
+            const gc = mk(0.17, tc, 1.05);
+            osc('triangle', f, gc, tc, 1.0);
+          });
+          [2093, 2637, 3136].forEach((f, i) => {
+            const d = tc + i * 0.08;
+            const gbv = mk(0.10, d, 0.85);
+            osc('sine', f, gbv, d, 0.80);
+          });
+          break;
+        }
+
+        // ─────────────────────────────────
+        case 'levelup': {
+          // バンドパスノイズ上昇スウィープ
+          const bpf3 = ac.createBiquadFilter();
+          bpf3.type = 'bandpass';
+          bpf3.frequency.setValueAtTime(280, t);
+          bpf3.frequency.exponentialRampToValueAtTime(2800, t + 0.75);
+          bpf3.Q.value = 2.2;
+          const gsw = ac.createGain();
+          gsw.gain.setValueAtTime(0, t);
+          gsw.gain.linearRampToValueAtTime(0.18, t + 0.08);
+          gsw.gain.linearRampToValueAtTime(0.06, t + 0.75);
+          gsw.gain.exponentialRampToValueAtTime(0.0001, t + 0.80);
+          bpf3.connect(gsw); gsw.connect(D);
+          noise(bpf3, t, 0.81);
+          // サイングリッサンド
+          const gg = ac.createGain();
+          gg.gain.setValueAtTime(0, t);
+          gg.gain.linearRampToValueAtTime(0.25, t + 0.18);
+          gg.gain.exponentialRampToValueAtTime(0.0001, t + 0.80);
+          gg.connect(D);
+          const og2 = ac.createOscillator();
+          og2.type = 'sine';
+          og2.frequency.setValueAtTime(220, t);
+          og2.frequency.exponentialRampToValueAtTime(2200, t + 0.75);
+          og2.connect(gg); og2.start(t); og2.stop(t + 0.80);
+          // Cメジャー1.5オクターブ上昇アルペジオ
+          [523, 587, 659, 784, 880, 988, 1047, 1175, 1319, 1568].forEach((f, i) => {
+            const d = t + 0.50 + i * 0.09;
+            const ga = mk(0.17, d, 0.52);
+            osc('triangle', f, ga, d, 0.47);
+            const gh = mk(0.055, d, 0.28);
+            osc('sine', f * 2, gh, d, 0.23);
+          });
+          // Cmaj7 最終コード
+          const fc = t + 1.48;
+          [523, 659, 784, 988, 1047].forEach(f => {
+            const gc = mk(0.15, fc, 1.00);
+            osc('triangle', f, gc, fc, 0.95);
+          });
+          // ベルスパークルカスケード
+          [1760, 2093, 2637, 3136, 2093, 2637].forEach((f, i) => {
+            const d = fc + 0.02 + i * 0.08;
+            const gbv = mk(0.11, d, 0.95);
+            osc('sine', f, gbv, d, 0.88);
+          });
+          break;
+        }
+
+        // ─────────────────────────────────
         case 'defeat': {
-          const g = gain(0.20, t, 0.80);
-          osc('sawtooth', 220, g, t, 0.25);
-          osc('sawtooth', 185, g, t + 0.20, 0.30);
-          osc('sawtooth', 147, g, t + 0.45, 0.35);
+          // キック + ノイズバースト
+          const gkd = ac.createGain();
+          gkd.gain.setValueAtTime(0.35, t);
+          gkd.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+          gkd.connect(D);
+          const okd = ac.createOscillator();
+          okd.type = 'sine';
+          okd.frequency.setValueAtTime(90, t);
+          okd.frequency.exponentialRampToValueAtTime(28, t + 0.45);
+          okd.connect(gkd); okd.start(t); okd.stop(t + 0.55);
+          const gnd2 = mk(0.12, t, 0.15);
+          noise(gnd2, t, 0.15);
+          // 下降メロディ G→F→Eb→C + 短3度和音
+          [[392, 0.10], [349, 0.40], [311, 0.68], [261, 0.95]].forEach(([f, d]) => {
+            const gm = mk(0.20, t + d, 0.40);
+            osc('sawtooth', f, gm, t + d, 0.35);
+            const gm2 = mk(0.07, t + d, 0.40);
+            osc('sawtooth', f * 0.794, gm2, t + d, 0.35);
+          });
+          // 余韻ノイズ
+          const gndt = mk(0.05, t + 0.3, 1.30);
+          noise(gndt, t + 0.3, 1.20);
           break;
         }
+
+        // ─────────────────────────────────
         case 'chest': {
-          const g = gain(0.20, t, 0.50);
-          osc('sine', 523, g, t, 0.15);
-          osc('sine', 784, g, t + 0.12, 0.18);
-          osc('sine', 1047, g, t + 0.26, 0.25);
+          // コインジャラジャラ(ベル倍音付き)
+          [1047, 1175, 1319, 1568, 1760].forEach((f, i) => {
+            const d = t + i * 0.055;
+            const gc = mk(0.13, d, 0.65);
+            osc('sine', f, gc, d, 0.60);
+            const gcb = mk(0.045, d, 0.40);
+            osc('sine', f * 2.756, gcb, d, 0.35);
+          });
+          // 上昇キラキラ
+          [2093, 2637, 3136, 3729].forEach((f, i) => {
+            const d = t + 0.22 + i * 0.07;
+            const gs = mk(0.09, d, 0.58);
+            osc('sine', f, gs, d, 0.52);
+          });
+          // 暖かみのある低音パッド
+          const gcpad = ac.createGain();
+          gcpad.gain.setValueAtTime(0, t);
+          gcpad.gain.linearRampToValueAtTime(0.08, t + 0.07);
+          gcpad.gain.exponentialRampToValueAtTime(0.0001, t + 0.85);
+          gcpad.connect(D);
+          [262, 330, 392].forEach(f => osc('triangle', f, gcpad, t, 0.80));
           break;
         }
+
+        // ─────────────────────────────────
         case 'hint': {
-          const g = gain(0.12, t, 0.25);
-          osc('sine', 440, g, t, 0.12);
-          osc('sine', 550, g, t + 0.10, 0.15);
+          // ベル倍音チャイム(2.756倍音 = ベル特性倍音)
+          [880, 1047].forEach((f, i) => {
+            const d = t + i * 0.14;
+            const gh = mk(0.14, d, 0.75);
+            osc('sine', f, gh, d, 0.70);
+            const gh2 = mk(0.05, d, 0.45);
+            osc('sine', f * 2.756, gh2, d, 0.38);
+            const gh3 = mk(0.02, d, 0.28);
+            osc('sine', f * 5.404, gh3, d, 0.22);
+          });
           break;
         }
       }
