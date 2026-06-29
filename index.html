@@ -210,16 +210,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .enemy-hp-wrap{flex:1;height:12px;background:rgba(255,255,255,.12);border-radius:6px;overflow:hidden;}
 .enemy-hp-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#ff6060,#ff3a3a);transition:width .35s ease;}
 .enemy-hp-num{font-size:10px;font-weight:800;color:#ff9999;flex:none;min-width:28px;text-align:right;}
-.enemy-stage{height:140px;display:flex;align-items:flex-end;justify-content:center;position:relative;flex:none;}
-.enemy-sprite{height:90px;width:auto;max-width:75%;display:block;
+.enemy-stage{height:160px;display:flex;align-items:flex-end;justify-content:center;position:relative;flex:none;}
+.enemy-sprite{height:110px;width:auto;max-width:80%;display:block;
   position:relative;z-index:1;
   image-rendering:pixelated;image-rendering:-moz-crisp-edges;
   animation:bob 2.4s ease-in-out infinite;transform-origin:center bottom;
   filter:drop-shadow(0 4px 12px rgba(0,0,0,.65));
 }
 .enemy-sprite.boss{
-  height:115px;
+  height:130px;
   filter:drop-shadow(0 4px 18px rgba(0,0,0,.7)) drop-shadow(0 0 14px rgba(180,40,255,.35));
+}
+.enemy-sprite.final-boss{
+  height:155px;
+  filter:drop-shadow(0 6px 24px rgba(0,0,0,.8)) drop-shadow(0 0 20px rgba(180,40,255,.5));
 }
 /* 地面ライン */
 .ground-line{height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);flex:none;}
@@ -638,9 +642,10 @@ ruby rt{font-size:.55em;color:var(--ink-soft);}
 
 /* スマホ対応 */
 @media (max-height:700px){
-  .enemy-stage{height:100px;}
-  .enemy-sprite{height:72px;}
-  .enemy-sprite.boss{height:88px;}
+  .enemy-stage{height:120px;}
+  .enemy-sprite{height:88px;}
+  .enemy-sprite.boss{height:105px;}
+  .enemy-sprite.final-boss{height:118px;}
   .battle-party .hero-sprite{height:54px;}
   .q-text{font-size:28px;}
 }

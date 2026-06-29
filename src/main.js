@@ -433,7 +433,7 @@ function renderEnemy(first) {
     img = document.createElement('img');
     stage.appendChild(img);
   }
-  img.className = `enemy-sprite${e.boss ? ' boss' : ''}`;
+  img.className = `enemy-sprite${e.boss ? ' boss' : ''}${e.final ? ' final-boss' : ''}`;
   img.id = 'enemySprite';
   img.src = src;
   img.alt = e.name;
