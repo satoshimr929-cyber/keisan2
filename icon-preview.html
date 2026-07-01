@@ -5,51 +5,137 @@
 <title>アイコンプレビュー</title>
 <style>
   body { background:#0c0030; color:#fff; font-family:monospace; padding:20px; }
-  h1 { color:#FFD700; margin-bottom:20px; }
-  .grid { display:flex; flex-wrap:wrap; gap:24px; }
-  .item { display:flex; flex-direction:column; align-items:center; gap:8px; }
-  .item label { font-size:12px; color:#8888ff; }
+  h1 { color:#FFD700; margin-bottom:8px; }
+  p { color:#aaa; margin-bottom:24px; }
+  .grid { display:flex; flex-wrap:wrap; gap:20px; }
+  .item { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .item label { font-size:11px; color:#8888ff; text-align:center; }
   .box {
     background:#04020c;
     border:2px solid #3858d8;
     border-bottom:3px solid #060a38;
-    padding:12px;
-    display:flex; gap:12px; align-items:center;
+    padding:12px 16px;
+    display:flex; gap:16px; align-items:center;
   }
   img { image-rendering:pixelated; }
 </style>
 </head>
 <body>
-<h1>SFCピクセルアートアイコン プレビュー</h1>
-<p style="color:#aaa;margin-bottom:24px">24×24 ドット絵風アイコン（各サイズ: 24px / 48px / 96px）</p>
+<h1>Gemini生成 ピクセルアートアイコン</h1>
+<p>各サイズ: 24px / 48px / 96px（黒背景除去済み）</p>
 <div class="grid">
-</div>
-<script>
-const icons = [
-  "sword","book","trophy","gem","chart","sound","mute",
-  "map","church","skull","fire","star","explosion","sprout"
-];
-const labels = {
-  sword:"⚔ ぼうけん/こうげき", book:"📖 ふくしゅう", trophy:"🏆 しょうごう",
-  gem:"✨ かがやきストーン", chart:"📊 習熟度", sound:"🔊 サウンドON",
-  mute:"🔇 サウンドOFF", map:"🗺 マップ", church:"⛪ 教会",
-  skull:"💀 ゲームオーバー", fire:"🔥 れんぞく", star:"⭐ クリア済み",
-  explosion:"💥 クリティカル", sprout:"🌱 ステージアイコン"
-};
-const grid = document.querySelector('.grid');
-icons.forEach(name => {
-  const div = document.createElement('div');
-  div.className = 'item';
-  div.innerHTML = `
+  <div class="item">
     <div class="box">
-      <img src="src/icons/${name}.svg" width="24" height="24">
-      <img src="src/icons/${name}.svg" width="48" height="48">
-      <img src="src/icons/${name}.svg" width="96" height="96">
+      <img src="src/icons/sword.png" width="24" height="24">
+      <img src="src/icons/sword.png" width="48" height="48">
+      <img src="src/icons/sword.png" width="96" height="96">
     </div>
-    <label>${name}<br>${labels[name]||''}</label>
-  `;
-  grid.appendChild(div);
-});
-</script>
+    <label>sword<br>⚔ ぼうけん・こうげき</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/book.png" width="24" height="24">
+      <img src="src/icons/book.png" width="48" height="48">
+      <img src="src/icons/book.png" width="96" height="96">
+    </div>
+    <label>book<br>📖 ふくしゅうモード</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/trophy.png" width="24" height="24">
+      <img src="src/icons/trophy.png" width="48" height="48">
+      <img src="src/icons/trophy.png" width="96" height="96">
+    </div>
+    <label>trophy<br>🏆 しょうごう</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/gem.png" width="24" height="24">
+      <img src="src/icons/gem.png" width="48" height="48">
+      <img src="src/icons/gem.png" width="96" height="96">
+    </div>
+    <label>gem<br>✨ かがやきストーン</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/chart.svg" width="24" height="24">
+      <img src="src/icons/chart.svg" width="48" height="48">
+      <img src="src/icons/chart.svg" width="96" height="96">
+    </div>
+    <label>chart (SVG)<br>📊 習熟度</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/sound.png" width="24" height="24">
+      <img src="src/icons/sound.png" width="48" height="48">
+      <img src="src/icons/sound.png" width="96" height="96">
+    </div>
+    <label>sound<br>🔊 サウンドON</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/mute.png" width="24" height="24">
+      <img src="src/icons/mute.png" width="48" height="48">
+      <img src="src/icons/mute.png" width="96" height="96">
+    </div>
+    <label>mute<br>🔇 サウンドOFF</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/map.png" width="24" height="24">
+      <img src="src/icons/map.png" width="48" height="48">
+      <img src="src/icons/map.png" width="96" height="96">
+    </div>
+    <label>map<br>🗺 マップ</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/church.png" width="24" height="24">
+      <img src="src/icons/church.png" width="48" height="48">
+      <img src="src/icons/church.png" width="96" height="96">
+    </div>
+    <label>church<br>⛪ 教会</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/skull.png" width="24" height="24">
+      <img src="src/icons/skull.png" width="48" height="48">
+      <img src="src/icons/skull.png" width="96" height="96">
+    </div>
+    <label>skull<br>💀 ゲームオーバー</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/fire.png" width="24" height="24">
+      <img src="src/icons/fire.png" width="48" height="48">
+      <img src="src/icons/fire.png" width="96" height="96">
+    </div>
+    <label>fire<br>🔥 れんぞく</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/star.png" width="24" height="24">
+      <img src="src/icons/star.png" width="48" height="48">
+      <img src="src/icons/star.png" width="96" height="96">
+    </div>
+    <label>star<br>⭐ クリア済み</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/explosion.png" width="24" height="24">
+      <img src="src/icons/explosion.png" width="48" height="48">
+      <img src="src/icons/explosion.png" width="96" height="96">
+    </div>
+    <label>explosion<br>💥 クリティカル</label>
+  </div>
+  <div class="item">
+    <div class="box">
+      <img src="src/icons/sprout.png" width="24" height="24">
+      <img src="src/icons/sprout.png" width="48" height="48">
+      <img src="src/icons/sprout.png" width="96" height="96">
+    </div>
+    <label>sprout<br>🌱 ステージアイコン</label>
+  </div>
+</div>
 </body>
 </html>
