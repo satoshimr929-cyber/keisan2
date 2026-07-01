@@ -314,7 +314,7 @@ let _pendingStage = null;
 function startStory(stage) {
   _pendingStage = stage;
   $('storyTitle').textContent = stage.name;
-  $('storyIco').textContent = stage.ico;
+  $('storyIco').innerHTML = ico(stage.ico);
   $('storyText').innerHTML = stage.story.replace(/\n/g, '<br>');
   $('storyGrade').textContent = stage.grade;
   show('screen-story');
@@ -378,7 +378,7 @@ function startPractice() {
 
   // 練習用の仮ユニット
   const practiceUnit = {
-    id: '__practice', name: 'ふくしゅうモード', grade: '', ico: '📖',
+    id: '__practice', name: 'ふくしゅうモード', grade: '', ico: 'book',
     pool, tier: 1, last: false, story: '',
     weapon: STARTWEAPON, keyName: '', keyIco: '',
   };

@@ -6,6 +6,7 @@ import { stageUnlocked } from '../engine/progression.js';
 import { loadCleared } from '../engine/save.js';
 import { Audio } from '../fx/audio.js';
 import { WORLDMAP_BG } from '../assets-worldmap-bg.js';
+import { ICONS } from '../assets-icons.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -149,12 +150,23 @@ export function renderWorldMap(container, onSelectStage) {
     g.appendChild(E('circle', { r, fill: done ? '#a07200' : (unlocked ? '#060c1e' : '#0c1228'), opacity: unlocked ? '1' : '.7' }));
 
     // ── アイコン ──
-    txt(g, done ? '⭐' : (unlocked ? stage.ico : '🔒'), {
-      'text-anchor': 'middle', 'dominant-baseline': 'central',
-      'font-size': isFinal ? '5.5' : '3.8',
-      fill: done ? '#ffd040' : (unlocked ? '#f0f4ff' : '#3a4270'),
-      filter: 'url(#shadow)',
-    });
+    const iconSize = isFinal ? 6.5 : 5;
+    const iconSrc = done ? ICONS['star'] : (unlocked ? ICONS[stage.ico] : null);
+    if (iconSrc) {
+      const imgEl = E('image', {
+        href: iconSrc,
+        x: `${-iconSize / 2}`, y: `${-iconSize / 2}`,
+        width: `${iconSize}`, height: `${iconSize}`,
+        preserveAspectRatio: 'xMidYMid meet',
+      });
+      g.appendChild(imgEl);
+    } else if (!unlocked) {
+      txt(g, '🔒', {
+        'text-anchor': 'middle', 'dominant-baseline': 'central',
+        'font-size': '3.8',
+        fill: '#3a4270', filter: 'url(#shadow)',
+      });
+    }
 
     // ── ステージ番号バッジ（右上角） ──
     txt(g, String(i + 1), {
