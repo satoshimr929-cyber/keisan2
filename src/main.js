@@ -179,7 +179,7 @@ function renderParty(elId) {
 function initTitle() {
   // タイトル背景
   const titleBgEl = $('titleBg');
-  if (titleBgEl) titleBgEl.src = SFC_TITLE_BG || TITLE_BG;
+  if (titleBgEl && TITLE_BG) titleBgEl.src = TITLE_BG;
 
   // 進捗%
   const pctEl = $('titlePct');
