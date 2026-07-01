@@ -630,6 +630,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   width:36px;height:36px;object-fit:contain;
   image-rendering:pixelated;flex:none;
 }
+.game-icon{
+  display:inline-block;width:1.2em;height:1.2em;
+  vertical-align:middle;image-rendering:pixelated;
+  object-fit:contain;
+}
 /* CSS グラデーション gem (フォールバック) */
 .stone-gem{
   width:44px;height:44px;border-radius:6px;position:relative;overflow:hidden;
@@ -710,11 +715,11 @@ ruby rt{font-size:.55em;color:var(--ink-soft);}
       </div>
     </div>
     <div class="title-btns">
-      <button class="title-btn" data-screen="screen-map">⚔️ ぼうけんに でる</button>
-      <button class="title-btn secondary" id="practiceBtn">📖 ふくしゅうモード</button>
-      <button class="title-btn secondary" data-screen="screen-achievements">🏆 しょうごう・せいかい</button>
-      <button class="title-btn secondary" data-screen="screen-collection">✨ かがやきストーン</button>
-      <button class="title-btn secondary" data-screen="screen-mastery">📊 習熟度チェック</button>
+      <button class="title-btn" data-screen="screen-map" id="btn-adventure"></button>
+      <button class="title-btn secondary" id="practiceBtn"></button>
+      <button class="title-btn secondary" data-screen="screen-achievements" id="btn-achievements"></button>
+      <button class="title-btn secondary" data-screen="screen-collection" id="btn-collection"></button>
+      <button class="title-btn secondary" data-screen="screen-mastery" id="btn-mastery"></button>
     </div>
     <div class="mute-area">
       <button id="muteBtn" aria-label="ミュートにする" title="音のオン/オフ">🔊</button>

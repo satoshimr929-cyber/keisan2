@@ -25,6 +25,7 @@ import { Particles } from './fx/particles.js';
 import { Transitions } from './fx/transitions.js';
 import { renderWorldMap } from './ui/worldmap.js';
 import { IMG, WIMG, TITLE_BG } from './assets-generated.js';
+import { ico } from './assets-icons.js';
 import { SFC_TITLE_BG } from './assets-sfc-bgs.js';
 import { WARRIOR_1, MAGE_1, PRIEST_1 } from './assets-hero-sprites.js';
 IMG['warrior1'] = WARRIOR_1;
@@ -303,7 +304,7 @@ function renderBag() {
   const el = $('bagWin');
   if (!el) return;
   const eq = equippedWeapon(), ws = ownedWeapons();
-  el.innerHTML = `<div class="bag-title">⚔️ そうび：<b>${wIco(eq)} ${eq.name}</b>（こうげき＋${eq.atk}）</div>
+  el.innerHTML = `<div class="bag-title">${ico('sword')} そうび：<b>${wIco(eq)} ${eq.name}</b>（こうげき＋${eq.atk}）</div>
     <div class="bag-row">${ws.map(w => `<span class="bag-item${w === eq ? ' eq' : ''}">${wIco(w)}</span>`).join('')}</div>`;
 }
 
@@ -343,7 +344,7 @@ function startBattle(unit) {
   B.churchMode = false;
   B.revivedCount = 0;
   B.needsRevival = false;
-  $('attackBtn').textContent = '⚔️ こうげき！';
+  $('attackBtn').innerHTML = ico('sword') + ' こうげき！';
   $('hintBtn').style.display = 'inline-flex';
   $('inputCluster').style.display = '';
   $('continueBtn').style.display = 'none';
@@ -398,7 +399,7 @@ function startPractice() {
   const dummyEnemy = { name: 'れんしゅう', hp: 999, maxHp: 999, atk: 0, boss: false, sprite: 'pebblekin', exp: 0 };
   B.enemies = [dummyEnemy, dummyEnemy, dummyEnemy, { ...dummyEnemy, boss: true }];
 
-  $('battleTitle').textContent = '📖 ふくしゅうモード';
+  $('battleTitle').innerHTML = ico('book') + ' ふくしゅうモード';
   renderHeroWin('heroWinBattle');
   renderParty('battleParty');
   renderEnemy(true);
@@ -626,7 +627,7 @@ $('attackBtn').addEventListener('click', () => {
 
     if (B.practiceMode) {
       lines.push('<p class="good">⭕ せいかい！ すごい！</p>');
-      if (B.streak >= 3) lines.push(`<p class="lvup">🔥 ${B.streak}もん れんぞく せいかい！</p>`);
+      if (B.streak >= 3) lines.push(`<p class="lvup">${ico('fire')} ${B.streak}もん れんぞく せいかい！</p>`);
       advanceActiveSlot();
       renderParty('battleParty');
       B.pending = 'fight';
@@ -639,11 +640,11 @@ $('attackBtn').addEventListener('click', () => {
       let specialMsg = '';
 
       if (slot === 0) { // ゆうしゃ：敵瀕死でとどめの一撃
-        if (e.hp / e.maxHp < 0.3) { eff = Math.floor(eff * 1.5); specialMsg = '⚔️ とどめの いちげき！'; }
+        if (e.hp / e.maxHp < 0.3) { eff = Math.floor(eff * 1.5); specialMsg = ico('sword') + ' とどめの いちげき！'; }
       } else if (slot === 1) { // まほうつかい：高火力、連続正解でさらに強化
         eff = Math.floor(eff * 1.3);
         attackLabel = 'まほうつかいの じゅもん！';
-        if (B.streak >= 2) { eff = Math.floor(eff * 1.5); specialMsg = `✨ ${B.streak}もん れんぞく！ まほうが さえわたる！`; }
+        if (B.streak >= 2) { eff = Math.floor(eff * 1.5); specialMsg = `${ico('gem')} ${B.streak}もん れんぞく！ まほうが さえわたる！`; }
       } else { // そうりょ：低火力、正解時に仲間を回復
         eff = Math.floor(eff * 0.7);
         attackLabel = 'そうりょの こうげき！';
@@ -651,7 +652,7 @@ $('attackBtn').addEventListener('click', () => {
 
       const crit = slot !== 1 && Math.random() < 0.12; // まほうつかいは独自強化あるのでクリットなし
       let dmg = ri(Math.max(1, eff - 2), eff + 2);
-      if (crit) { dmg *= 2; Audio.play('crit'); lines.push('<p class="lvup">💥 かいしんの いちげき！</p>'); }
+      if (crit) { dmg *= 2; Audio.play('crit'); lines.push(`<p class="lvup">${ico('explosion')} かいしんの いちげき！</p>`); }
       if (specialMsg) lines.push(`<p class="lvup">${specialMsg}</p>`);
       lines.push(`<p class="good">${attackLabel}</p>`);
       lines.push(`<p>${e.name}に ${dmg}の ダメージ！</p>`);
@@ -792,7 +793,7 @@ function grantExp(amount, lines) {
     B.partyMaxHP = HEROES.map((_, i) => charMaxHP(i, hero.level));
     B.partyHP    = [...B.partyMaxHP]; // レベルアップで全員全回復
     syncPartyHP();
-    lines.push(`<p class="lvup">🌟 レベルアップ！ Lv ${hero.level}！</p>`);
+    lines.push(`<p class="lvup">${ico('star')} レベルアップ！ Lv ${hero.level}！</p>`);
     lines.push(`<p class="lvup">なかま全員 たいりょく かいふく！</p>`);
     Audio.play('levelup');
     Transitions.flash('#ffcf3f', 280);
@@ -834,8 +835,7 @@ function updateStreakDisplay() {
   if (B.streak >= 2) {
     bar.style.display = 'flex';
     bar.className = `streak-bar${B.streak >= 5 ? ' hot' : ''}`;
-    const fire = B.streak >= 5 ? '🔥🔥' : '🔥';
-    bar.textContent = `${fire} ${B.streak}もん れんぞく！`;
+    bar.innerHTML = `${ico('fire')}${B.streak >= 5 ? ico('fire') : ''} ${B.streak}もん れんぞく！`;
   } else {
     bar.style.display = 'none';
   }
@@ -910,7 +910,7 @@ function renderReward(stage) {
     html += `<span style="font-size:40px">📦</span>`;
   }
   html += `<span class="reward-pop" id="rewardPop" style="display:none">${wIco(w)}</span></div>`;
-  html += `<div class="reward-line">⚔️ <b>${w.name}</b> を てにいれた！ <span class="reward-atk">こうげき＋${w.atk}</span></div>`;
+  html += `<div class="reward-line">${ico('sword')} <b>${w.name}</b> を てにいれた！ <span class="reward-atk">こうげき＋${w.atk}</span></div>`;
   if (stage.last) {
     html += '<div class="reward-line big">👑 ぜんステージ クリア！ でんせつの ゆうしゃだ！</div>';
   } else {
@@ -994,7 +994,7 @@ function showChurch() {
   BattleBG.stop(); clearBattleBG();
   $('heroWinBattle').style.display = 'none';
   $('enemyHpRow').style.display = 'none';
-  $('enemyName').textContent = '⛪ 教会';
+  $('enemyName').innerHTML = ico('church') + ' 教会';
   $('enemyDots').innerHTML = '';
   const sprite = document.querySelector('#enemyStage #enemySprite');
   if (sprite) sprite.style.display = 'none';
@@ -1025,7 +1025,7 @@ function churchLoadProblem() {
   buildKeypad();
   $('attackBtn').disabled = true;
   $('hintBtn').style.display = 'none';
-  $('attackBtn').textContent = '✨ ふっかつ！';
+  $('attackBtn').innerHTML = ico('gem') + ' ふっかつ！';
 }
 
 function handleChurchAnswer() {
@@ -1042,14 +1042,14 @@ function handleChurchAnswer() {
     updateBars();
     if (B.revivedCount >= 3) {
       B.needsRevival = false;
-      setMessage([`<p class="lvup">🌟 なかまたちが みんな ふっかつした！</p>`]);
+      setMessage([`<p class="lvup">${ico('star')} なかまたちが みんな ふっかつした！</p>`]);
       $('inputCluster').style.display = 'none';
       $('continueBtn').style.display = 'none';
       $('churchEscapeBtn').style.display = 'none';
       $('churchCompleteBtns').style.display = 'flex';
     } else {
       const remaining = 3 - B.revivedCount;
-      setMessage([`<p class="lvup">✨ ${revivedName}が ふっかつ！</p><p>あと${remaining}人！</p>`]);
+      setMessage([`<p class="lvup">${ico('gem')} ${revivedName}が ふっかつ！</p><p>あと${remaining}人！</p>`]);
       $('continueBtn').textContent = 'つぎへ';
       B.pending = 'church_next';
       setMode('message');
@@ -1087,7 +1087,7 @@ function tryCollect(id) {
     ? `<img class="stone-popup-gem-img" src="${gemSrc}" alt="${s.name}">`
     : `<div class="stone-gem-sm" style="--c1:${s.c1};--c2:${s.c2};--bd:${s.bd};--glow:${s.glow}"></div>`;
   pop.innerHTML = `${gemEl}
-    <div class="stone-popup-info"><b>✨ あたらしい石を てにいれた！</b><br>${s.name}</div>`;
+    <div class="stone-popup-info"><b>${ico('gem')} あたらしい石を てにいれた！</b><br>${s.name}</div>`;
   document.body.appendChild(pop);
   setTimeout(() => pop.classList.add('show'), 10);
   setTimeout(() => { pop.classList.remove('show'); setTimeout(() => pop.remove(), 400); }, 3200);
@@ -1114,7 +1114,7 @@ function renderCollection() {
   const owned = loadCollection();
   const stageSec = STONES.filter(s => !s.special);
   const specSec  = STONES.filter(s =>  s.special);
-  let html = '<div class="coll-section-title">🗺️ ステージストーン</div><div class="stone-grid">';
+  let html = `<div class="coll-section-title">${ico('map')} ステージストーン</div><div class="stone-grid">`;
   stageSec.forEach(s => {
     const got = owned.has(s.id);
     html += `<div class="stone-card${got ? ' got' : ''}">
@@ -1123,7 +1123,7 @@ function renderCollection() {
       <div class="stone-desc">${got ? s.desc : '---'}</div>
     </div>`;
   });
-  html += '</div><div class="coll-section-title" style="margin-top:16px">⭐ とくべつ輝石</div><div class="stone-grid stone-grid-5">';
+  html += `</div><div class="coll-section-title" style="margin-top:16px">${ico('star')} とくべつ輝石</div><div class="stone-grid stone-grid-5">`;
   specSec.forEach(s => {
     const got = owned.has(s.id);
     html += `<div class="stone-card${got ? ' got' : ''}">
@@ -1232,7 +1232,7 @@ function exitChurch() {
   B.churchMode = false;
   $('heroWinBattle').style.display = '';
   $('enemyHpRow').style.display = '';
-  $('attackBtn').textContent = '⚔️ こうげき！';
+  $('attackBtn').innerHTML = ico('sword') + ' こうげき！';
   $('hintBtn').style.display = 'inline-flex';
   $('inputCluster').style.display = '';
   $('continueBtn').style.display = '';
@@ -1272,7 +1272,7 @@ function resumeChurch() {
   $('enemyHpRow').style.display = 'none';
   renderParty('battleParty');
   B.churchMode = true;
-  $('enemyName').textContent = '⛪ 教会';
+  $('enemyName').innerHTML = ico('church') + ' 教会';
   $('enemyDots').innerHTML = '';
   const sprite = document.querySelector('#enemyStage #enemySprite');
   if (sprite) sprite.style.display = 'none';
@@ -1286,7 +1286,7 @@ function resumeChurch() {
   setMessage([`<span class="hint">あと${remaining}人 ふっかつさせよう！</span>`]);
   $('continueBtn').textContent = 'もんだいをとく';
   B.pending = 'church_start';
-  $('attackBtn').textContent = '✨ ふっかつ！';
+  $('attackBtn').innerHTML = ico('gem') + ' ふっかつ！';
   $('hintBtn').style.display = 'none';
   $('inputCluster').style.display = '';
   $('continueBtn').style.display = '';
@@ -1302,9 +1302,74 @@ $('practiceBtn')?.addEventListener('click', () => { Audio.play('tap'); startPrac
 // ミュートトグル
 $('muteBtn').addEventListener('click', () => {
   Audio.toggle();
-  $('muteBtn').textContent = Audio.muted ? '🔇' : '🔊';
+  $('muteBtn').innerHTML = Audio.muted ? ico('mute') : ico('sound');
   $('muteBtn').setAttribute('aria-label', Audio.muted ? '音をオンにする' : 'ミュートにする');
 });
+
+// ===== アイコン初期化 =====
+function initIcons() {
+  // タイトルボタン
+  const btnAdventure = document.getElementById('btn-adventure');
+  if (btnAdventure) btnAdventure.innerHTML = `${ico('sword')} ぼうけんに でる`;
+  const btnPractice = document.getElementById('practiceBtn');
+  if (btnPractice) btnPractice.innerHTML = `${ico('book')} ふくしゅうモード`;
+  const btnAch = document.getElementById('btn-achievements');
+  if (btnAch) btnAch.innerHTML = `${ico('trophy')} しょうごう・せいかい`;
+  const btnColl = document.getElementById('btn-collection');
+  if (btnColl) btnColl.innerHTML = `${ico('gem')} かがやきストーン`;
+  const btnMastery = document.getElementById('btn-mastery');
+  if (btnMastery) btnMastery.innerHTML = `${ico('chart')} 習熟度チェック`;
+  // ミュートボタン初期値
+  const muteBtn = $('muteBtn');
+  if (muteBtn) muteBtn.innerHTML = ico('sound');
+  // ストーリー開始ボタン
+  const storyStart = $('storyStartBtn');
+  if (storyStart) storyStart.innerHTML = `${ico('sword')} たたかいかいし！`;
+  // マップ見出し
+  const mapH2 = document.querySelector('#screen-map .topbar h2');
+  if (mapH2) mapH2.innerHTML = `${ico('map')} ワールドマップ`;
+  // 教会ボタン (マップ通知)
+  const churchMapBtn = $('churchMapBtn');
+  if (churchMapBtn) churchMapBtn.innerHTML = `${ico('church')} 教会へいく`;
+  // マップ凡例
+  const legend = document.querySelector('.map-legend');
+  if (legend) legend.innerHTML =
+    `<span>${ico('star')} クリア済み</span><span>🔒 ロック中</span><span style="color:var(--gold);">● 挑戦可能</span>`;
+  // バトル脱出ボタン
+  const escBtn = $('churchEscapeBtn');
+  if (escBtn) escBtn.innerHTML = `${ico('map')} マップへにげる`;
+  // 教会完了ボタン
+  const retryBtn = $('churchRetryBtn');
+  if (retryBtn) retryBtn.innerHTML = `${ico('sword')} ふたたびちょうせん！`;
+  const fleeBtn = $('churchFleeBtn');
+  if (fleeBtn) fleeBtn.innerHTML = `${ico('map')} マップへもどる`;
+  // こうげきボタン初期値
+  const attackBtn = $('attackBtn');
+  if (attackBtn) attackBtn.innerHTML = `${ico('sword')} こうげき！`;
+  // ヒントボタン
+  const hintBtn = $('hintBtn');
+  if (hintBtn) hintBtn.innerHTML = `💡 ヒント`;
+  // クリア画面ボタン
+  const clearRetry = $('clearRetry');
+  if (clearRetry) clearRetry.innerHTML = `🔄 もう一度 あそぶ`;
+  const clearOther = $('clearOther');
+  if (clearOther) clearOther.innerHTML = `${ico('map')} ほかのステージへ`;
+  // ゲームオーバー画面ボタン
+  const overRetry = $('overRetry');
+  if (overRetry) overRetry.innerHTML = `🔄 もう一度 ちょうせん！`;
+  const overFlee = $('overFlee');
+  if (overFlee) overFlee.innerHTML = `${ico('map')} マップへもどる`;
+  // 見出し (achievements / collection / mastery)
+  const achH2 = document.querySelector('#screen-achievements .topbar h2');
+  if (achH2) achH2.innerHTML = `${ico('trophy')} しょうごう・せいかい`;
+  const collH2 = document.querySelector('#screen-collection .topbar h2');
+  if (collH2) collH2.innerHTML = `${ico('gem')} かがやきストーン`;
+  const mastH2 = document.querySelector('#screen-mastery .topbar h2');
+  if (mastH2) mastH2.innerHTML = `${ico('chart')} 習熟度チェック`;
+  // ゲームオーバー タイトル
+  const overTitle = document.querySelector('#screen-over .big-title.over');
+  if (overTitle) overTitle.innerHTML = `${ico('skull')} ゆうしゃたおれる…`;
+}
 
 // ===== 初期化 =====
 (async () => {
@@ -1323,5 +1388,6 @@ $('muteBtn').addEventListener('click', () => {
 
   // データロード
   hero = loadHero();
+  initIcons();
   initTitle();
 })();
