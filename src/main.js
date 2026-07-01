@@ -25,6 +25,7 @@ import { Particles } from './fx/particles.js';
 import { Transitions } from './fx/transitions.js';
 import { renderWorldMap } from './ui/worldmap.js';
 import { IMG, WIMG, TITLE_BG } from './assets-generated.js';
+import { SFC_TITLE_BG } from './assets-sfc-bgs.js';
 import { WARRIOR_1, MAGE_1, PRIEST_1 } from './assets-hero-sprites.js';
 IMG['warrior1'] = WARRIOR_1;
 IMG['mage1']    = MAGE_1;
@@ -178,7 +179,7 @@ function renderParty(elId) {
 function initTitle() {
   // タイトル背景
   const titleBgEl = $('titleBg');
-  if (titleBgEl && TITLE_BG) titleBgEl.src = TITLE_BG;
+  if (titleBgEl) titleBgEl.src = SFC_TITLE_BG || TITLE_BG;
 
   // 進捗%
   const pctEl = $('titlePct');
