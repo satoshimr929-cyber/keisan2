@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 260" width="100%" height="100%" shape-rendering="crispEdges">
+  <defs>
+    <linearGradient id="nightSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0c0030" />
+      <stop offset="100%" stop-color="#180060" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="390" height="260" fill="url(#nightSky)" />
+  <g fill="#ffffff">
+    <rect x="50" y="30" width="2" height="2" />
+    <rect x="130" y="25" width="2" height="2" fill="#fff5cc" />
+    <rect x="220" y="40" width="3" height="3" />
+    <rect x="290" y="55" width="2" height="2" fill="#fff5cc" />
+    <rect x="310" y="30" width="2" height="2" />
+    <rect x="335" y="65" width="2" height="2" fill="#fff5cc" />
+  </g>
+  <g transform="translate(160, 20)" fill="#ffffff">
+    <rect x="1" y="0" width="1" height="3" />
+    <rect x="0" y="1" width="3" height="1" />
+  </g>
+  <g transform="translate(260, 15)" fill="#fff5cc">
+    <rect x="1" y="0" width="1" height="3" />
+    <rect x="0" y="1" width="3" height="1" />
+  </g>
+  <circle cx="90" cy="70" r="25" fill="#fff5cc" />
+  <g fill="#ebd99f">
+    <rect x="80" y="55" width="4" height="3" />
+    <rect x="76" y="68" width="6" height="4" />
+    <rect x="94" y="78" width="8" height="5" />
+    <rect x="100" y="65" width="5" height="4" />
+  </g>
+  <g fill="#140733">
+    <path d="M 40 60 L 110 60 L 110 63 L 100 63 L 100 65 L 60 65 L 60 63 L 40 63 Z" opacity="0.85" />
+    <path d="M 70 75 L 130 75 L 130 78 L 120 78 L 120 80 L 80 80 L 80 78 L 70 78 Z" opacity="0.85" />
+  </g>
+  <path d="M 0 190 L 30 175 L 50 180 L 80 165 L 110 180 L 150 160 L 190 175 L 230 155 L 270 175 L 310 160 L 350 180 L 390 170 L 390 190 Z" fill="#10032c" />
+  <path d="M 60 190 L 60 160 L 65 160 L 65 150 L 70 150 L 70 140 L 75 140 L 75 130 L 78 130 L 78 120 L 80 120 L 80 110 L 81 110 L 81 120 L 83 120 L 83 130 L 86 130 L 86 140 L 91 140 L 91 150 L 96 150 L 96 160 L 101 160 L 101 190 Z" fill="#140733" />
+  <path d="M 110 190 L 110 150 L 120 150 L 120 140 L 130 140 L 130 145 L 140 145 L 140 140 L 150 140 L 150 145 L 160 145 L 160 140 L 170 140 L 170 100 L 175 100 L 175 95 L 180 95 L 180 90 L 185 90 L 185 80 L 186 80 L 186 90 L 191 90 L 191 95 L 196 95 L 196 100 L 201 100 L 201 140 L 211 140 L 211 145 L 221 145 L 221 140 L 231 140 L 231 150 L 241 150 L 241 190 Z" fill="#170d3a" />
+  <g fill="#ffb74d">
+    <rect x="181" y="115" width="4" height="8" />
+    <rect x="188" y="115" width="4" height="8" />
+    <rect x="135" y="155" width="6" height="4" fill="#ff7043" />
+    <rect x="215" y="155" width="6" height="4" fill="#ff7043" />
+  </g>
+  <rect x="0" y="190" width="390" height="70" fill="#302838" />
+  <g stroke="#4a3e56" stroke-width="1">
+    <line x1="0" y1="201" x2="390" y2="201" />
+    <line x1="0" y1="213" x2="390" y2="213" />
+    <line x1="0" y1="227" x2="390" y2="227" />
+    <line x1="0" y1="243" x2="390" y2="243" />
+  </g>
+  <g stroke="#19121f" stroke-width="1">
+    <line x1="0" y1="190" x2="390" y2="190" />
+    <line x1="0" y1="200" x2="390" y2="200" />
+    <line x1="0" y1="212" x2="390" y2="212" />
+    <line x1="0" y1="226" x2="390" y2="226" />
+    <line x1="0" y1="242" x2="390" y2="242" />
+    <line x1="30" y1="190" x2="28" y2="200" /><line x1="70" y1="190" x2="68" y2="200" />
+    <line x1="110" y1="190" x2="108" y2="200" /><line x1="150" y1="190" x2="149" y2="200" />
+    <line x1="190" y1="190" x2="190" y2="200" /><line x1="230" y1="190" x2="231" y2="200" />
+    <line x1="270" y1="190" x2="272" y2="200" /><line x1="310" y1="190" x2="312" y2="200" />
+    <line x1="10" y1="200" x2="7" y2="212" /><line x1="50" y1="200" x2="47" y2="212" />
+    <line x1="90" y1="200" x2="87" y2="212" /><line x1="130" y1="200" x2="128" y2="212" />
+    <line x1="170" y1="200" x2="169" y2="212" /><line x1="210" y1="200" x2="211" y2="212" />
+    <line x1="250" y1="200" x2="252" y2="212" /><line x1="290" y1="200" x2="293" y2="212" />
+    <line x1="30" y1="212" x2="25" y2="226" /><line x1="70" y1="212" x2="65" y2="226" />
+    <line x1="110" y1="212" x2="105" y2="226" /><line x1="150" y1="212" x2="146" y2="226" />
+    <line x1="190" y1="212" x2="190" y2="226" /><line x1="230" y1="212" x2="234" y2="226" />
+  </g>
+  <rect x="0" y="0" width="35" height="260" fill="#251e2b" />
+  <rect x="34" y="0" width="1" height="260" fill="#5c4d6a" />
+  <rect x="355" y="0" width="35" height="260" fill="#251e2b" />
+  <rect x="355" y="0" width="1" height="260" fill="#5c4d6a" />
+</svg>

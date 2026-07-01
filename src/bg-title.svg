@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 300" shape-rendering="crispEdges" width="100%" height="100%">
+  <defs>
+    <pattern id="dither-sky-1" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#0c0030" />
+      <rect width="2" height="2" fill="#040114" />
+      <rect x="2" y="2" width="2" height="2" fill="#040114" />
+    </pattern>
+    <pattern id="dither-sky-2" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#0c1870" />
+      <rect width="2" height="2" fill="#0c0030" />
+      <rect x="2" y="2" width="2" height="2" fill="#0c0030" />
+    </pattern>
+  </defs>
+  <rect width="390" height="300" fill="#040114" />
+  <rect y="40" width="390" height="50" fill="#0c0030" />
+  <rect y="100" width="390" height="60" fill="#0c1870" />
+  <rect y="166" width="390" height="14" fill="#1c2880" />
+  <g fill="#ffffff" opacity="0.8">
+    <rect x="15" y="15" width="2" height="2" /><rect x="75" y="25" width="2" height="2" />
+    <rect x="140" y="10" width="2" height="2" /><rect x="220" y="30" width="2" height="2" />
+    <rect x="360" y="15" width="2" height="2" /><rect x="45" y="75" width="2" height="2" />
+    <rect x="110" y="60" width="2" height="2" /><rect x="195" y="80" width="2" height="2" />
+    <rect x="255" y="55" width="2" height="2" /><rect x="335" y="70" width="2" height="2" />
+    <rect x="25" y="120" width="2" height="2" /><rect x="165" y="115" width="2" height="2" />
+    <rect x="285" y="125" width="2" height="2" /><rect x="350" y="110" width="2" height="2" />
+  </g>
+  <g fill="#ffdd00">
+    <rect x="90" y="45" width="2" height="6" /><rect x="88" y="47" width="6" height="2" />
+    <rect x="270" y="20" width="2" height="6" /><rect x="268" y="22" width="6" height="2" />
+    <rect x="50" y="105" width="2" height="6" /><rect x="48" y="107" width="6" height="2" />
+    <rect x="180" y="40" width="2" height="2" /><rect x="305" y="85" width="2" height="2" />
+  </g>
+  <!-- Crescent Moon -->
+  <g fill="#ffdd00">
+    <rect x="316" y="20" width="10" height="2" /><rect x="312" y="22" width="16" height="2" />
+    <rect x="310" y="24" width="10" height="2" /><rect x="308" y="26" width="8" height="2" />
+    <rect x="306" y="28" width="6" height="4" /><rect x="304" y="32" width="6" height="6" />
+    <rect x="306" y="38" width="6" height="4" /><rect x="308" y="42" width="8" height="2" />
+    <rect x="310" y="44" width="10" height="2" /><rect x="312" y="46" width="16" height="2" />
+    <rect x="316" y="48" width="10" height="2" />
+  </g>
+  <g fill="#040114">
+    <rect x="320" y="24" width="8" height="2" /><rect x="316" y="26" width="12" height="2" />
+    <rect x="314" y="28" width="14" height="2" /><rect x="312" y="30" width="16" height="8" />
+    <rect x="314" y="38" width="14" height="2" /><rect x="316" y="40" width="12" height="2" />
+    <rect x="320" y="42" width="8" height="2" />
+  </g>
+  <!-- Mountains -->
+  <path d="M 0 180 L 0 162 L 14 162 L 14 158 L 26 158 L 26 154 L 38 154 L 38 150 L 52 150 L 52 146 L 70 146 L 70 150 L 84 150 L 84 154 L 98 154 L 98 158 L 120 158 L 132 150 L 144 150 L 144 146 L 158 146 L 158 142 L 176 142 L 176 138 L 190 138 L 190 144 L 204 144 L 204 148 L 220 148 L 220 154 L 244 154 L 252 148 L 266 148 L 266 142 L 282 142 L 282 136 L 298 136 L 298 144 L 314 144 L 314 150 L 332 150 L 332 156 L 350 156 L 350 160 L 390 160 L 390 180 Z" fill="#0c0828" />
+  <!-- Castle -->
+  <rect x="154" y="142" width="6" height="24" fill="#040014" />
+  <rect x="156" y="132" width="2" height="10" fill="#040014" />
+  <rect x="155" y="124" width="4" height="8" fill="#040014" />
+  <rect x="166" y="136" width="8" height="30" fill="#040014" />
+  <rect x="168" y="124" width="4" height="12" fill="#040014" />
+  <rect x="182" y="120" width="26" height="46" fill="#040014" />
+  <rect x="182" y="116" width="4" height="4" fill="#040014" />
+  <rect x="189" y="116" width="4" height="4" fill="#040014" />
+  <rect x="196" y="116" width="4" height="4" fill="#040014" />
+  <rect x="204" y="116" width="4" height="4" fill="#040014" />
+  <rect x="192" y="104" width="6" height="12" fill="#040014" />
+  <rect x="194" y="94" width="2" height="10" fill="#040014" />
+  <rect x="216" y="138" width="8" height="28" fill="#040014" />
+  <rect x="230" y="146" width="6" height="20" fill="#040014" />
+  <rect x="232" y="138" width="2" height="8" fill="#040014" />
+  <g fill="#ffdd00">
+    <rect x="194" y="126" width="2" height="4" /><rect x="194" y="134" width="2" height="4" />
+    <rect x="186" y="130" width="2" height="4" /><rect x="202" y="130" width="2" height="4" />
+    <rect x="170" y="140" width="2" height="4" /><rect x="219" y="142" width="2" height="4" />
+  </g>
+  <!-- Ground -->
+  <rect y="180" width="390" height="120" fill="#030010" />
+  <path d="M 0 180 H 390 V 186 H 0 Z" fill="#08031d" />
+  <!-- Road -->
+  <path d="M 125 300 L 188 180 H 202 L 265 300 Z" fill="#19103a" />
+  <path d="M 132 300 L 190 180 H 200 L 258 300 Z" fill="#2b1f54" />
+  <g fill="#cc66ff">
+    <rect x="188" y="215" width="8" height="2" /><rect x="176" y="228" width="10" height="3" />
+    <rect x="198" y="232" width="8" height="3" />
+  </g>
+  <!-- Floating math symbols -->
+  <g>
+    <rect x="76" y="204" width="12" height="18" fill="#cc66ff" opacity="0.6" />
+    <rect x="73" y="207" width="18" height="12" fill="#cc66ff" opacity="0.6" />
+    <rect x="80" y="206" width="4" height="14" fill="#ffdd00" />
+    <rect x="75" y="211" width="14" height="4" fill="#ffdd00" />
+    <rect x="80" y="211" width="4" height="4" fill="#ffffff" />
+  </g>
+  <g>
+    <rect x="290" y="230" width="22" height="10" fill="#ffdd00" opacity="0.5" />
+    <rect x="294" y="233" width="14" height="4" fill="#cc66ff" />
+    <rect x="296" y="233" width="10" height="4" fill="#ffffff" />
+  </g>
+  <g>
+    <rect x="274" y="154" width="16" height="16" fill="#cc66ff" opacity="0.5" />
+    <rect x="276" y="156" width="4" height="4" fill="#ffdd00" />
+    <rect x="284" y="156" width="4" height="4" fill="#ffdd00" />
+    <rect x="280" y="160" width="4" height="4" fill="#ffffff" />
+    <rect x="276" y="164" width="4" height="4" fill="#ffdd00" />
+    <rect x="284" y="164" width="4" height="4" fill="#ffdd00" />
+  </g>
+  <g>
+    <rect x="212" y="194" width="20" height="16" fill="#cc66ff" opacity="0.5" />
+    <rect x="215" y="197" width="14" height="3" fill="#ffdd00" />
+    <rect x="215" y="204" width="14" height="3" fill="#ffdd00" />
+  </g>
+</svg>
