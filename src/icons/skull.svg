@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" shape-rendering="crispEdges">
+  <rect x="6" y="5" width="12" height="10" fill="#DDDDDD"/>
+  <rect x="7" y="4" width="10" height="1" fill="#DDDDDD"/>
+  <rect x="8" y="3" width="8" height="1" fill="#CCCCCC"/>
+  <rect x="5" y="6" width="1" height="8" fill="#CCCCCC"/>
+  <rect x="18" y="6" width="1" height="8" fill="#CCCCCC"/>
+  <rect x="6" y="14" width="12" height="2" fill="#DDDDDD"/>
+  <rect x="7" y="7" width="4" height="4" fill="#000000"/>
+  <rect x="13" y="7" width="4" height="4" fill="#000000"/>
+  <rect x="8" y="8" width="2" height="2" fill="#AA44FF"/>
+  <rect x="14" y="8" width="2" height="2" fill="#AA44FF"/>
+  <rect x="11" y="10" width="2" height="2" fill="#BBBBBB"/>
+  <rect x="6" y="16" width="2" height="4" fill="#DDDDDD"/>
+  <rect x="10" y="16" width="2" height="4" fill="#DDDDDD"/>
+  <rect x="14" y="16" width="2" height="4" fill="#DDDDDD"/>
+  <rect x="8" y="16" width="2" height="3" fill="#222222"/>
+  <rect x="12" y="16" width="2" height="3" fill="#222222"/>
+  <rect x="16" y="16" width="2" height="3" fill="#222222"/>
+</svg>

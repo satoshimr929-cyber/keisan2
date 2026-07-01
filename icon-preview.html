@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>アイコンプレビュー</title>
+<style>
+  body { background:#0c0030; color:#fff; font-family:monospace; padding:20px; }
+  h1 { color:#FFD700; margin-bottom:20px; }
+  .grid { display:flex; flex-wrap:wrap; gap:24px; }
+  .item { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .item label { font-size:12px; color:#8888ff; }
+  .box {
+    background:#04020c;
+    border:2px solid #3858d8;
+    border-bottom:3px solid #060a38;
+    padding:12px;
+    display:flex; gap:12px; align-items:center;
+  }
+  img { image-rendering:pixelated; }
+</style>
+</head>
+<body>
+<h1>SFCピクセルアートアイコン プレビュー</h1>
+<p style="color:#aaa;margin-bottom:24px">24×24 ドット絵風アイコン（各サイズ: 24px / 48px / 96px）</p>
+<div class="grid">
+</div>
+<script>
+const icons = [
+  "sword","book","trophy","gem","chart","sound","mute",
+  "map","church","skull","fire","star","explosion","sprout"
+];
+const labels = {
+  sword:"⚔ ぼうけん/こうげき", book:"📖 ふくしゅう", trophy:"🏆 しょうごう",
+  gem:"✨ かがやきストーン", chart:"📊 習熟度", sound:"🔊 サウンドON",
+  mute:"🔇 サウンドOFF", map:"🗺 マップ", church:"⛪ 教会",
+  skull:"💀 ゲームオーバー", fire:"🔥 れんぞく", star:"⭐ クリア済み",
+  explosion:"💥 クリティカル", sprout:"🌱 ステージアイコン"
+};
+const grid = document.querySelector('.grid');
+icons.forEach(name => {
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.innerHTML = `
+    <div class="box">
+      <img src="src/icons/${name}.svg" width="24" height="24">
+      <img src="src/icons/${name}.svg" width="48" height="48">
+      <img src="src/icons/${name}.svg" width="96" height="96">
+    </div>
+    <label>${name}<br>${labels[name]||''}</label>
+  `;
+  grid.appendChild(div);
+});
+</script>
+</body>
+</html>
